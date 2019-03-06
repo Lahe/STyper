@@ -28,11 +28,12 @@ public class ThreadWords extends Thread {
 
     }
 
+
     public void run() {
         try {
             for (int i = 0; i < 24; i++) {
                 tg.putString(loc, i, word);
-                tg.putString(loc, i - 1, " ".repeat(20));
+                tg.putString(loc, i - 1, " ".repeat(word.length()));
                 screen.refresh();
                 Thread.sleep(300);
             }

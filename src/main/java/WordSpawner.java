@@ -5,9 +5,17 @@ public class WordSpawner {
     Random a;
     int roll;
     String word;
+    private String text;
 
     public String getWord() {
         return word;
+    }
+
+
+    public void matchWord(String typedText){
+        if(typedText.equals(this.word)){
+
+        }
     }
 
     public WordSpawner(String[] words) {
@@ -15,5 +23,8 @@ public class WordSpawner {
         this.a = new Random();
         this.roll = a.nextInt(149);
         this.word = words[roll];
+    }
+    public WordSpawner(String text){
+        this.text = text;
     }
 }

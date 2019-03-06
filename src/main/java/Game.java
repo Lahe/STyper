@@ -22,6 +22,11 @@ public class Game {
     public TextGraphics tg;
     public Screen screen;
     public Terminal terminal;
+    StringBuilder sb;
+
+    public StringBuilder getSb() {
+        return sb;
+    }
 
     public static void main(String[] args) throws IOException, InterruptedException {
         Terminal terminal = new DefaultTerminalFactory().createTerminal();
@@ -61,10 +66,12 @@ public class Game {
                     case Character:
                         if (keyPressed.getCharacter().equals(' ')) {
                             if (sb.toString().equals(word)){
+                                System.out.println("xd");
                                 sb = new StringBuilder();
                                 screen.refresh();
                             }
                             tg.putString(0, 23, " ".repeat(80));
+                            sb = new StringBuilder();
                             screen.refresh();
                         }
                         else {
