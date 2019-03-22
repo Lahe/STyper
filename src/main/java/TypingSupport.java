@@ -1,9 +1,7 @@
 import org.hexworks.zircon.api.Sizes;
 import org.hexworks.zircon.api.UIEventResponses;
-import org.hexworks.zircon.api.color.ANSITileColor;
 import org.hexworks.zircon.api.data.Position;
 import org.hexworks.zircon.api.data.Size;
-import org.hexworks.zircon.api.graphics.Layer;
 import org.hexworks.zircon.api.grid.TileGrid;
 import org.hexworks.zircon.api.uievent.KeyCode;
 import org.hexworks.zircon.api.uievent.KeyboardEventType;
@@ -15,10 +13,6 @@ public class TypingSupport extends Game {
     private static final int TYPER_WIDTH = 35;
     private static final int TYPER_HEIGHT = 43;
     private static StringBuilder sb = new StringBuilder();
-
-    public static StringBuilder getSb() {
-        return sb;
-    }
 
     public static Size getSIZE() {
         return SIZE;
@@ -39,11 +33,9 @@ public class TypingSupport extends Game {
                 System.out.println(sb.toString());
 
             } else if (event.getCode().equals(KeyCode.ENTER) || event.getCode().equals(KeyCode.SPACE)) {
-                //System.out.println(getRolledWord());
                 if (getWordsOnScreen().containsKey(sb.toString())) {
                     tileGrid.removeLayer(getWordsOnScreen().get(sb.toString()));
                     getWordsOnScreen().remove(sb.toString());
-                    //System.out.println("xd");
                 }
                 for (int i = 0; i < TERMINAL_WIDTH; i++) {
                     tileGrid.putCharacter(' ');
