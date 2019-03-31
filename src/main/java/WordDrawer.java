@@ -8,7 +8,7 @@ import org.hexworks.zircon.api.graphics.Layer;
 import org.hexworks.zircon.api.grid.TileGrid;
 
 
-public class WordDrawer {
+public class WordDrawer { // See klass tegeleb ekraanile sõnade kuvamisega.
     private TileGrid tileGrid;
     private Layer wordLayer;
 
@@ -20,7 +20,7 @@ public class WordDrawer {
         this.tileGrid = tileGrid;
     }
 
-    public void drawWords(String rolledWord){
+    public void drawWords(String rolledWord) {
         wordLayer = new LayerBuilder().withOffset(Positions.create(Game.getLoc(), 0))
                 .withSize(Sizes.create(rolledWord.length(), 1))
                 .build();
