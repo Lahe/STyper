@@ -43,6 +43,11 @@ public class TypingSupport {
                     tileGrid.removeLayer(Game.getWordsOnScreen().get(sb.toString()));
                     Game.getWordsOnScreen().remove(sb.toString());
                 }
+                else {
+                    points -= sb.length() * 5;
+                    Game.getGameScreen().write("Points: " + points, Positions.create(60, 42)).invoke();
+                    System.out.println(points + "    ");
+                }
                 for (int i = 0; i < TERMINAL_WIDTH; i++) {
                     tileGrid.putCharacter(' ');
                 }
