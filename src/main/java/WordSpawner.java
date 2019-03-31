@@ -28,7 +28,7 @@ public class WordSpawner {
     }
 
     public int getLoc() {
-        return rand.nextInt(70) + 5;
+        return rand.nextInt(65) + 5;
     }
 
     public String rollNext() throws Exception {

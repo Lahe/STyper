@@ -17,7 +17,6 @@ public class TypingSupport {
     private static StringBuilder sb = new StringBuilder();
     private static int points = Game.getPoints();
 
-
     public static Size getSIZE() {
         return SIZE;
     }

@@ -39,11 +39,17 @@ public class Game {
     private static final Button medButton = Components.button().withText("Medium").withPosition(Positions.create(38,21)).build();
     private static final Button hardButton = Components.button().withText("Hard").withPosition(Positions.create(38,23)).build();
     private static final Button extremeButton = Components.button().withText("Extreme").withPosition(Positions.create(38,25)).build();
+    private static final Button insaneButton = Components.button().withText("Insane").withPosition(Positions.create(38,27)).build();
     private static int[] stats = new int[3];
     private static final int[] easyStats = {2000,2000,15};
-    private static final int[] medStats = {1500,1500,30};
-    private static final int[] hardStats = {750,750,60};
-    private static final int[] extremeStats = {500,500,90};
+    private static final int[] medStats = {1300,1300,30};
+    private static final int[] hardStats = {1000,1000,60};
+    private static final int[] extremeStats = {750,750,60};
+    private static final int[] insaneStats = {500,500,60};
+
+    public static TileGrid getTileGrid() {
+        return tileGrid;
+    }
 
     public static int[] getStats() {
         return stats;
@@ -97,7 +103,6 @@ public class Game {
             Thread t_threadWords = new Thread(threadWords);
             t_threadWords.start();
             livesLeft = ThreadWords.getLivesLeft();
-
             Thread.sleep(stats[0]);
         }
         boolean gameRunning = true;
@@ -130,6 +135,7 @@ public class Game {
         levelScreen.addComponent(medButton);
         levelScreen.addComponent(hardButton);
         levelScreen.addComponent(extremeButton);
+        levelScreen.addComponent(insaneButton);
 
         startButton.onComponentEvent(ComponentEventType.ACTIVATED, (event) -> {
             levelScreen.display();
@@ -183,6 +189,21 @@ public class Game {
         extremeButton.onComponentEvent(ComponentEventType.ACTIVATED, (event) ->  {
             stats = extremeStats;
             gameScreen.write("Level: Extreme", Positions.create(70, 1)).invoke();
+            gameScreen.display();
+            Runnable runnable = () -> {
+                try {
+                    launchGame(gameScreen);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            };
+            Thread t = new Thread(runnable);
+            t.start();
+            return UIEventResponses.preventDefault();
+        });
+        insaneButton.onComponentEvent(ComponentEventType.ACTIVATED, (event) ->  {
+            stats = insaneStats;
+            gameScreen.write("Level: Insane", Positions.create(70, 1)).invoke();
             gameScreen.display();
             Runnable runnable = () -> {
                 try {
