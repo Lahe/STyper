@@ -1,12 +1,16 @@
 import org.hexworks.zircon.api.Positions;
 import org.hexworks.zircon.api.graphics.Layer;
 
-public class ThreadWords implements Runnable {
+public class ThreadWords implements Runnable { // Selles klassis toimub sõnade alla liigutamine ja elude üle arve pidamine.
     private Layer wordLayer;
     private static int livesLeft = Game.getLivesLeft();
 
     public static int getLivesLeft() {
         return livesLeft;
+    }
+
+    public static void setLivesLeft(int livesLeft) {
+        ThreadWords.livesLeft = livesLeft;
     }
 
     ThreadWords(Layer wordLayer) {
@@ -19,7 +23,7 @@ public class ThreadWords implements Runnable {
                 wordLayer.moveDownBy(2);
                 Thread.sleep(Game.getStats()[1]);
             }
-            if (Game.getWordsOnScreen().containsValue(wordLayer)){
+            if (Game.getWordsOnScreen().containsValue(wordLayer)) {
                 livesLeft -= 1;
                 System.out.println(livesLeft);
                 Game.setLivesLeft(livesLeft);
