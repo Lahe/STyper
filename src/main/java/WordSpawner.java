@@ -23,7 +23,7 @@ public class WordSpawner { // See klass tegeleb failist sõnade lugemisega ja ne
 
     static {
         try {
-            words = readWords("src/main/simple2.txt");
+            words = readWords("simple2.txt");
         } catch (Exception e) {
             e.printStackTrace();
         }
