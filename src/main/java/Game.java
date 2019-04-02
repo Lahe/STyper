@@ -28,6 +28,8 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
     private static final Screen menuScreen = Screens.createScreenFor(tileGrid);
     private static final Screen levelScreen = Screens.createScreenFor(tileGrid);
     private static final Button startButton = Components.button().withText("START").withPosition(Positions.create(38, 20)).build();
+    private static final Button playAgainButton = Components.button().withText("PLAY AGAIN").withPosition(Positions.create(37, 23)).build();
+    private static final Button playAgainButtonFinishedScreen = Components.button().withText("PLAY AGAIN").withPosition(Positions.create(37, 23)).build();
     private static final Screen gameScreen = Screens.createScreenFor(tileGrid);
     private static final Button backButton = Components.button().withText("BACK").withPosition(Positions.offset1x1()).build();
     private static final Screen gameOverScreen = Screens.createScreenFor(tileGrid);
@@ -46,6 +48,7 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
     private static List<Thread> threadid = new ArrayList<>(); //
     private static List<Layer> tekstid = new ArrayList<>(); //
     private static boolean stopLaunchGame = false;
+    private static boolean gameRunning = true;
 
     public static TileGrid getTileGrid() {
         return tileGrid;
@@ -83,16 +86,34 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
         return wordsOnScreen;
     }
 
+    public static void clearLastGame() {
+        TypingSupport.setStartOrStopSupport(false);
+        stopLaunchGame = true;
+        tileGrid.clear();
+        livesLeft = 3;
+        setLivesLeft(3);
+        setPoints(0);
+        TypingSupport.setPoints(0);
+        ThreadWords.setLivesLeft(3);
+        wordsOnScreen = new HashMap<>();
+        gameRunning = false;
+    }
+
+    public static void checkIfGameOver() {
+        if (livesLeft == 0) {
+            gameOverScreen.write("Points: " + points, Positions.create(38, 21)).invoke();
+            clearLastGame();
+            gameOverScreen.display();
+        }
+    }
+
     public static void launchGame(Screen gameScreen) throws Exception { // Loob igale sõnale ThreadWords'i isendi ja kuvab sõnu ekraanile.
         WordSpawner spawner = new WordSpawner();
         WordDrawer drawer = new WordDrawer(gameScreen);
         TypingSupport support = new TypingSupport();
         support.startTypingSupport(gameScreen);
         for (int i = 0; i <= stats[2]; i++) {
-            if (livesLeft == 0) {
-                gameOverScreen.write("Points: " + points, Positions.create(38, 21)).invoke();
-                gameOverScreen.display();
-            }
+            checkIfGameOver();
             //System.out.println(getWordsOnScreen().toString());
             rolledWord = spawner.rollNext();
             loc = spawner.getLoc();
@@ -102,7 +123,6 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
             tekstid.add(wordLayer);
             ThreadWords threadWords = new ThreadWords(wordLayer);
             Thread t_threadWords = new Thread(threadWords);
-            /////////////////////d
             threadid.add(t_threadWords); //
             t_threadWords.start();
             livesLeft = ThreadWords.getLivesLeft();
@@ -112,7 +132,7 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
                 break;
             }
         }
-        boolean gameRunning = true;
+
         while (gameRunning) { // Kontrollitakse, kas mäng on läbi. Võidu või kaotuse korral kuvatakse punktide arv.
             if (livesLeft == 0) {
                 gameRunning = false;
@@ -121,6 +141,7 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
             } else if (wordsOnScreen.isEmpty()) {
                 gameRunning = false;
                 gameFinishedScreen.write("Points: " + points, Positions.create(38, 21)).invoke();
+                clearLastGame();
                 gameFinishedScreen.display();
             }
             Thread.sleep(500);
@@ -132,9 +153,8 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
         gameOverScreen.write("GAME OVER", Positions.create(38, 20)).invoke();
         gameFinishedScreen.write("Game Finished. Well done!", Positions.create(32, 20)).invoke();
         gameScreen.write("Points: " + points, Positions.create(60, 42)).invoke();
-        gameScreen.write("Lives: " + livesLeft, Positions.create(15, 42)).invoke();
+        gameScreen.write("Lives: " + "♥".repeat(livesLeft), Positions.create(15, 42)).invoke();
 
-        gameScreen.addComponent(backButton);
         menuScreen.display();
         levelScreen.write("Choose level", Positions.create(36, 17)).invoke();
         levelScreen.addComponent(easyButton);
@@ -142,15 +162,52 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
         levelScreen.addComponent(hardButton);
         levelScreen.addComponent(extremeButton);
         levelScreen.addComponent(insaneButton);
+        gameOverScreen.addComponent(playAgainButton);
+        gameFinishedScreen.addComponent(playAgainButtonFinishedScreen);
+        for (int i = 33; i < 51; i++) {
+            levelScreen.write("═", Positions.create(i, 16)).invoke();
+            levelScreen.write("═", Positions.create(i, 18)).invoke();
+            levelScreen.write("═", Positions.create(i, 28)).invoke();
+        }
+        levelScreen.write("╔", Positions.create(33, 16)).invoke();
+        for (int i = 16; i < 29; i++) {
+            levelScreen.write("║", Positions.create(33, i)).invoke();
+            levelScreen.write("║", Positions.create(50, i)).invoke();
+        }
+        levelScreen.write("╬", Positions.create(33, 16)).invoke();
+        levelScreen.write("╬", Positions.create(50, 16)).invoke();
+        levelScreen.write("╬", Positions.create(33, 18)).invoke();
+        levelScreen.write("╬", Positions.create(50, 18)).invoke();
+        levelScreen.write("╬", Positions.create(33, 28)).invoke();
+        levelScreen.write("╬", Positions.create(50, 28)).invoke();
 
         startButton.onComponentEvent(ComponentEventType.ACTIVATED, (event) -> {
             levelScreen.display();
             return UIEventResponses.preventDefault();
         });
+
+        playAgainButton.onComponentEvent(ComponentEventType.ACTIVATED, (event) -> {
+            clearLastGame();
+            gameScreen.removeComponent(backButton);
+            wordsOnScreen.clear();
+            menuScreen.display();
+            return UIEventResponses.preventDefault();
+        });
+
+        playAgainButtonFinishedScreen.onComponentEvent(ComponentEventType.ACTIVATED, (event) -> {
+            clearLastGame();
+            gameScreen.removeComponent(backButton);
+            wordsOnScreen.clear();
+            menuScreen.display();
+            return UIEventResponses.preventDefault();
+        });
+
         easyButton.onComponentEvent(ComponentEventType.ACTIVATED, (event) -> {
+            gameRunning = true;
             stopLaunchGame = false;
             stats = easyStats;
-            gameScreen.write("Lives: " + livesLeft, Positions.create(15, 42)).invoke();
+            gameScreen.addComponent(backButton);
+            gameScreen.write("Lives: " + "♥".repeat(livesLeft), Positions.create(15, 42)).invoke();
             gameScreen.write("Points: " + points, Positions.create(60, 42)).invoke();
             gameScreen.write("Level: Easy", Positions.create(73, 1)).invoke();
             gameScreen.display();
@@ -167,9 +224,11 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
             return UIEventResponses.preventDefault();
         });
         medButton.onComponentEvent(ComponentEventType.ACTIVATED, (event) -> {
+            gameRunning = true;
             stopLaunchGame = false;
             stats = medStats;
-            gameScreen.write("Lives: " + livesLeft, Positions.create(15, 42)).invoke();
+            gameScreen.addComponent(backButton);
+            gameScreen.write("Lives: " + "♥".repeat(livesLeft), Positions.create(15, 42)).invoke();
             gameScreen.write("Points: " + points, Positions.create(60, 42)).invoke();
             gameScreen.write("Level: Medium", Positions.create(70, 1)).invoke();
             gameScreen.display();
@@ -186,9 +245,11 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
             return UIEventResponses.preventDefault();
         });
         hardButton.onComponentEvent(ComponentEventType.ACTIVATED, (event) -> {
+            gameRunning = true;
             stopLaunchGame = false;
             stats = hardStats;
-            gameScreen.write("Lives: " + livesLeft, Positions.create(15, 42)).invoke();
+            gameScreen.addComponent(backButton);
+            gameScreen.write("Lives: " + "♥".repeat(livesLeft), Positions.create(15, 42)).invoke();
             gameScreen.write("Points: " + points, Positions.create(60, 42)).invoke();
             gameScreen.write("Level: Hard", Positions.create(73, 1)).invoke();
             gameScreen.display();
@@ -205,9 +266,11 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
             return UIEventResponses.preventDefault();
         });
         extremeButton.onComponentEvent(ComponentEventType.ACTIVATED, (event) -> {
+            gameRunning = true;
             stopLaunchGame = false;
             stats = extremeStats;
-            gameScreen.write("Lives: " + livesLeft, Positions.create(15, 42)).invoke();
+            gameScreen.addComponent(backButton);
+            gameScreen.write("Lives: " + "♥".repeat(livesLeft), Positions.create(15, 42)).invoke();
             gameScreen.write("Points: " + points, Positions.create(60, 42)).invoke();
             gameScreen.write("Level: Extreme", Positions.create(70, 1)).invoke();
             gameScreen.display();
@@ -224,9 +287,11 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
             return UIEventResponses.preventDefault();
         });
         insaneButton.onComponentEvent(ComponentEventType.ACTIVATED, (event) -> {
+            gameRunning = true;
             stopLaunchGame = false;
             stats = insaneStats;
-            gameScreen.write("Lives: " + livesLeft, Positions.create(15, 42)).invoke();
+            gameScreen.addComponent(backButton);
+            gameScreen.write("Lives: " + "♥".repeat(livesLeft), Positions.create(15, 42)).invoke();
             gameScreen.write("Points: " + points, Positions.create(60, 42)).invoke();
             gameScreen.write("Level: Insane", Positions.create(70, 1)).invoke();
             gameScreen.display();
@@ -244,22 +309,14 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
         });
 
         backButton.onComponentEvent(ComponentEventType.ACTIVATED, (event) -> { // BACK nuppu vajutades, peatab threadid, kustutab teksti layerid ja taastab elud ning algse punktiseisu.
-            System.out.println("THEDE ON :" + threadid.size());
             for (Thread a : threadid) {
                 a.stop();
             }
             for (Layer b : tekstid) {
                 tileGrid.removeLayer(b);
             }
-            TypingSupport.setStartOrStopSupport(false);
-            stopLaunchGame = true;
-            tileGrid.clear();
-            livesLeft = 3;
-            setLivesLeft(3);
-            setPoints(0);
-            TypingSupport.setPoints(0);
-            ThreadWords.setLivesLeft(3);
-            wordsOnScreen = new HashMap<>();
+            clearLastGame();
+            gameScreen.removeComponent(backButton);
             menuScreen.display();
             return UIEventResponses.preventDefault();
         });
