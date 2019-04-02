@@ -27,7 +27,9 @@ public class ThreadWords implements Runnable { // Selles klassis toimub sõnade 
                 livesLeft -= 1;
                 System.out.println(livesLeft);
                 Game.setLivesLeft(livesLeft);
-                Game.getGameScreen().write("Lives: " + livesLeft, Positions.create(15, 42)).invoke();
+                if(livesLeft >= 0) {
+                    Game.getGameScreen().write("Lives: " + "♥".repeat(livesLeft) + " ".repeat(3), Positions.create(15, 42)).invoke();
+                }
             }
         } catch (Exception err) {
             err.printStackTrace();
