@@ -1,12 +1,22 @@
 import org.hexworks.zircon.api.*;
-import org.hexworks.zircon.api.component.Button;
+import org.hexworks.zircon.api.builder.component.LabelBuilder;
+import org.hexworks.zircon.api.builder.component.TextBoxBuilder;
+import org.hexworks.zircon.api.component.*;
+import org.hexworks.zircon.api.graphics.BoxType;
 import org.hexworks.zircon.api.graphics.Layer;
 import org.hexworks.zircon.api.grid.TileGrid;
 import org.hexworks.zircon.api.resource.BuiltInCP437TilesetResource;
+import org.hexworks.zircon.api.resource.ColorThemeResource;
+import org.hexworks.zircon.api.resource.TilesetResource;
 import org.hexworks.zircon.api.screen.Screen;
+import org.hexworks.zircon.api.tileset.Tileset;
 import org.hexworks.zircon.api.uievent.ComponentEventType;
+import org.hexworks.zircon.internal.component.renderer.NoOpComponentRenderer;
 
+import java.io.*;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -27,6 +37,8 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
     private static int points = 0;
     private static final Screen menuScreen = Screens.createScreenFor(tileGrid);
     private static final Screen levelScreen = Screens.createScreenFor(tileGrid);
+    private static final Screen scoreScreen = Screens.createScreenFor(tileGrid);
+    private static final Button scoreButton = Components.button().withText("SCORES").withPosition(Positions.create(38, 23)).build();
     private static final Button startButton = Components.button().withText("START").withPosition(Positions.create(38, 20)).build();
     private static final Button playAgainButton = Components.button().withText("PLAY AGAIN").withPosition(Positions.create(37, 23)).build();
     private static final Button playAgainButtonFinishedScreen = Components.button().withText("PLAY AGAIN").withPosition(Positions.create(37, 23)).build();
@@ -49,6 +61,12 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
     private static List<Layer> tekstid = new ArrayList<>(); //
     private static boolean stopLaunchGame = false;
     private static boolean gameRunning = true;
+    private static String winOrLose;
+    public static List<Integer> easyTops = new ArrayList<>();
+    public static List<Integer> mediumTops = new ArrayList<>();
+    public static List<Integer> hardTops = new ArrayList<>();
+    public static List<Integer> extremeTops = new ArrayList<>();
+    public static List<Integer> insaneTops = new ArrayList<>();
 
     public static TileGrid getTileGrid() {
         return tileGrid;
@@ -86,6 +104,218 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
         return wordsOnScreen;
     }
 
+    public static void writeResultToFile() {
+        Timestamp timestamp = new java.sql.Timestamp(System.currentTimeMillis());
+        String difficultyLevel = "";
+        if (stats == easyStats) {
+            difficultyLevel = "Easy";
+        } else if (stats == medStats) {
+            difficultyLevel = "Medium";
+        } else if (stats == hardStats) {
+            difficultyLevel = "Hard";
+        } else if (stats == extremeStats) {
+            difficultyLevel = "Extreme";
+        } else {
+            difficultyLevel = "Insane";
+        }
+        try {
+            String filename = "Game_results.txt";
+            FileWriter fw = new FileWriter(filename, true);
+            fw.write(timestamp + " " + winOrLose + " " + difficultyLevel + " " + getPoints() + "\n");
+            fw.close();
+        } catch (IOException ex) {
+            System.out.println("Oih");
+        }
+    }
+    public static void scoresFromFile(){
+        String rida;
+        try(
+                BufferedReader in = new BufferedReader((new FileReader("Game_results.txt")));
+        ){
+            while((rida = in.readLine()) != null) {
+                String[] line = rida.split(" ");
+                if (line[3].equals("Easy")) {
+                    int score = Integer.parseInt(line[4]);
+                    if(easyTops.size() < 5){
+                        easyTops.add(score);
+                    }
+                    else{
+                        if(Collections.min(easyTops) < score){
+                            easyTops.set(easyTops.indexOf(Collections.min(easyTops)), score);
+                        }
+                    }
+                }
+                else if(line[3].equals("Medium")){
+                    int score = Integer.parseInt(line[4]);
+                    if(mediumTops.size() < 5){
+                        mediumTops.add(score);
+                    }
+                    else{
+                        if(Collections.min(mediumTops) < score){
+                            mediumTops.set(mediumTops.indexOf(Collections.min(mediumTops)), score);
+                        }
+                    }
+                }
+                else if(line[3].equals("Hard")){
+                    int score = Integer.parseInt(line[4]);
+                    if(hardTops.size() < 5){
+                        hardTops.add(score);
+                    }
+                    else{
+                        if(Collections.min(hardTops) < score){
+                            hardTops.set(hardTops.indexOf(Collections.min(hardTops)), score);
+                        }
+                    }
+                }
+                else if(line[3].equals("Insane")){
+                    int score = Integer.parseInt(line[4]);
+                    if(insaneTops.size() < 5){
+                        insaneTops.add(score);
+                    }
+                    else{
+                        if(Collections.min(insaneTops) < score){
+                            insaneTops.set(insaneTops.indexOf(Collections.min(insaneTops)), score);
+                        }
+                    }
+                }
+                else if(line[3].equals("Extreme")){
+                    int score = Integer.parseInt(line[4]);
+                    if(extremeTops.size() < 5){
+                        extremeTops.add(score);
+                    }
+                    else{
+                        if(Collections.min(extremeTops) < score){
+                            extremeTops.set(extremeTops.indexOf(Collections.min(extremeTops)), score);
+                        }
+                    }
+                }
+            }
+            Collections.sort(easyTops, Collections.reverseOrder());
+            Collections.sort(mediumTops, Collections.reverseOrder());
+            Collections.sort(hardTops, Collections.reverseOrder());
+            Collections.sort(insaneTops, Collections.reverseOrder());
+            Collections.sort(extremeTops, Collections.reverseOrder());
+
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public static String getScore(List<Integer> list, int index){
+        if(list.size() > index){
+            return Integer.toString(list.get(index));
+        }
+        return "-";
+    }
+
+    public static void showScores(){
+        scoresFromFile();
+        Panel easyPanel = Components.panel()
+                .withPosition(Positions.create(19, 8)) // X 36 KESKMISE JAOKS 4 on vahe
+                .withSize(13, 15)
+                .withTitle("Easy")
+                .wrapWithBox(true)
+                .build();
+
+        TextBox easyBox = Components.textBox()
+                .withPosition(Positions.create(0, 1))
+                .withContentWidth(11)
+                .addParagraph("RANK SCORE")
+                .addParagraph("1ST  " + getScore(easyTops, 0))
+                .addParagraph("2ND  " + getScore(easyTops, 1))
+                .addParagraph("3RD  " + getScore(easyTops, 2))
+                .addParagraph("4TH  " + getScore(easyTops, 3))
+                .addParagraph("5TH  " + getScore(easyTops, 4))
+                .build();
+
+        Panel mediumPanel = Components.panel()
+                .withPosition(Positions.create(36, 8)) // X 36 KESKMISE JAOKS 4 on vahe
+                .withSize(13, 15)
+                .withTitle("Medium")
+                .wrapWithBox(true)
+                .build();
+
+        TextBox mediumBox = Components.textBox()
+                .withPosition(Positions.create(0, 1))
+                .withContentWidth(11)
+                .addParagraph("RANK SCORE")
+                .addParagraph("1ST  " + getScore(mediumTops, 0))
+                .addParagraph("2ND  " + getScore(mediumTops, 1))
+                .addParagraph("3RD  " + getScore(mediumTops, 2))
+                .addParagraph("4TH  " + getScore(mediumTops, 3))
+                .addParagraph("5TH  " + getScore(mediumTops, 4))
+                .build();
+
+        Panel hardPanel = Components.panel()
+                .withPosition(Positions.create(53, 8)) // X 36 KESKMISE JAOKS 4 on vahe
+                .withSize(13, 15)
+                .withTitle("Hard")
+                .wrapWithBox(true)
+                .build();
+
+        TextBox hardBox = Components.textBox()
+                .withPosition(Positions.create(0, 1))
+                .withContentWidth(11)
+                .addParagraph("RANK SCORE")
+                .addParagraph("1ST  " + getScore(hardTops, 0))
+                .addParagraph("2ND  " + getScore(hardTops, 1))
+                .addParagraph("3RD  " + getScore(hardTops, 2))
+                .addParagraph("4TH  " + getScore(hardTops, 3))
+                .addParagraph("5TH  " + getScore(hardTops, 4))
+                .build();
+
+        Panel insanePanel = Components.panel()
+                .withPosition(Positions.create(28, 24)) // X 36 KESKMISE JAOKS 4 on vahe
+                .withSize(13, 15)
+                .withTitle("Insane")
+                .wrapWithBox(true)
+                .build();
+        // insanePanel.applyColorTheme(ColorThemeResource.AMIGA_OS.getTheme()); Teema lisamine
+        TextBox insaneBox = Components.textBox()
+                .withPosition(Positions.create(0, 1))
+                .withContentWidth(11)
+                .addParagraph("RANK SCORE")
+                .addParagraph("1ST  " + getScore(insaneTops, 0))
+                .addParagraph("2ND  " + getScore(insaneTops, 1))
+                .addParagraph("3RD  " + getScore(insaneTops, 2))
+                .addParagraph("4TH  " + getScore(insaneTops, 3))
+                .addParagraph("5TH  " + getScore(insaneTops, 4))
+                .build();
+
+        Panel extremePanel = Components.panel()
+                .withPosition(Positions.create(45, 24)) // X 36 KESKMISE JAOKS 4 on vahe
+                .withSize(13, 15)
+                .withTitle("Extreme")
+                .wrapWithBox(true)
+                .build();
+
+        TextBox extremeBox = Components.textBox()
+                .withPosition(Positions.create(0, 1))
+                .withContentWidth(11)
+                .addParagraph("RANK SCORE")
+                .addParagraph("1ST  " + getScore(extremeTops, 0))
+                .addParagraph("2ND  " + getScore(extremeTops, 1))
+                .addParagraph("3RD  " + getScore(extremeTops, 2))
+                .addParagraph("4TH  " + getScore(extremeTops, 3))
+                .addParagraph("5TH  " + getScore(extremeTops, 4))
+                .build();
+
+        easyPanel.addComponent(easyBox);
+        mediumPanel.addComponent(mediumBox);
+        hardPanel.addComponent(hardBox);
+        insanePanel.addComponent(insaneBox);
+        extremePanel.addComponent(extremeBox);
+
+        scoreScreen.addComponent(easyPanel);
+        scoreScreen.addComponent(mediumPanel);
+        scoreScreen.addComponent(hardPanel);
+        scoreScreen.addComponent(insanePanel);
+        scoreScreen.addComponent(extremePanel);
+        scoreScreen.display();
+    }
+
     public static void clearLastGame() {
         TypingSupport.setStartOrStopSupport(false);
         stopLaunchGame = true;
@@ -102,6 +332,8 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
     public static void checkIfGameOver() {
         if (livesLeft == 0) {
             gameOverScreen.write("Points: " + points, Positions.create(38, 21)).invoke();
+            winOrLose = "LOST";
+            writeResultToFile();
             clearLastGame();
             gameOverScreen.display();
         }
@@ -137,10 +369,14 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
             if (livesLeft == 0) {
                 gameRunning = false;
                 gameOverScreen.write("Points: " + points, Positions.create(38, 21)).invoke();
+                winOrLose = "LOST";
+                writeResultToFile();
                 gameOverScreen.display();
             } else if (wordsOnScreen.isEmpty()) {
                 gameRunning = false;
                 gameFinishedScreen.write("Points: " + points, Positions.create(38, 21)).invoke();
+                winOrLose = "WIN";
+                writeResultToFile();
                 clearLastGame();
                 gameFinishedScreen.display();
             }
@@ -150,6 +386,7 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
 
     public static void main(String[] args) throws Exception {
         menuScreen.addComponent(startButton);
+        menuScreen.addComponent(scoreButton);
         gameOverScreen.write("GAME OVER", Positions.create(38, 20)).invoke();
         gameFinishedScreen.write("Game Finished. Well done!", Positions.create(32, 20)).invoke();
         gameScreen.write("Points: " + points, Positions.create(60, 42)).invoke();
@@ -183,6 +420,11 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
 
         startButton.onComponentEvent(ComponentEventType.ACTIVATED, (event) -> {
             levelScreen.display();
+            return UIEventResponses.preventDefault();
+        });
+
+        scoreButton.onComponentEvent(ComponentEventType.ACTIVATED, (event) -> {
+            showScores();
             return UIEventResponses.preventDefault();
         });
 
