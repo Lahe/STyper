@@ -1,3 +1,4 @@
+import com.sun.management.GarbageCollectionNotificationInfo;
 import org.hexworks.zircon.api.Positions;
 import org.hexworks.zircon.api.Sizes;
 import org.hexworks.zircon.api.UIEventResponses;
@@ -48,10 +49,12 @@ public class TypingSupport { // See klass tegeleb kasutaja poolt sisestatud teks
                     if (Game.getWordsOnScreen().containsKey(sb.toString())) { // Kui sõna klapib, siis suurendatakse punktisummat ja eemaldatakse sõna ekraanilt
                         points += sb.length() * 10;
                         Game.setPoints(points);
-                        System.out.println(Game.getPoints());
+                        int totalPoints = Game.getTotalPoints();
+                        totalPoints += sb.length() * 10;
+                        Game.setTotalPoints(totalPoints);
                         if (Game.getGameStyle().equals("ARCADE"))
                         Game.getGameScreen().write("Points: " + points, Positions.create(60, 42)).invoke();
-                        else Game.getGameScreen().write("Credits: " + points, Positions.create(60, 42)).invoke();
+                        else Game.getGameScreen().write("Credits: " + totalPoints, Positions.create(60, 42)).invoke();
                         tileGrid.removeLayer(Game.getWordsOnScreen().get(sb.toString()));
                         Game.getWordsOnScreen().remove(sb.toString());
                     }

@@ -101,9 +101,7 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
     public static List<String> save2 = new ArrayList<>();
     public static List<String> save3 = new ArrayList<>();
 
-
     private static String gameStyle = "";
-
 
     public static TileGrid getTileGrid() {
         return tileGrid;
@@ -141,6 +139,14 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
         return loc;
     }
 
+    public static int getTotalPoints() {
+        return totalPoints;
+    }
+
+    public static void setTotalPoints(int totalPoints) {
+        Game.totalPoints = totalPoints;
+    }
+
     public static HashMap<String, Layer> getWordsOnScreen() {
         return wordsOnScreen;
     }
@@ -162,7 +168,7 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
         try {
             String filename = "Leaderboards.txt";
             FileWriter fw = new FileWriter(filename, true);
-            fw.write(timestamp + " " + winOrLose + " " + difficultyLevel + " " + getPoints() + "\n");
+            fw.write(timestamp + " " + winOrLose + " " + difficultyLevel + " " + totalPoints + "\n");
             fw.close();
         } catch (IOException ex) {
             System.out.println("Oih");
@@ -181,8 +187,8 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
             try (FileWriter fw = new FileWriter(filename)) {
                 String[] save = rows.get(saveClicked - 1);
                 save[0] = String.valueOf(saveClicked);
-                save[1] = String.valueOf(currentLevel);
-                save[2] = String.valueOf(getPoints());
+                save[1] = String.valueOf(currentLevel+1);
+                save[2] = String.valueOf(totalPoints);
                 save[3] = String.valueOf(getLivesLeft());
                 save[4] = timestamp.toString();
                 //save[5] = "";
@@ -200,21 +206,21 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
 
     public static void loadSave1() {
         currentLevel = Integer.parseInt(save1.get(0));
-        setPoints(Integer.parseInt(save1.get(1)));
+        setTotalPoints(Integer.parseInt(save1.get(1)));
         livesLeft = Integer.parseInt(save1.get(2));
         stats = campaignStats[currentLevel - 1];
     }
 
     public static void loadSave2() {
         currentLevel = Integer.parseInt(save2.get(0));
-        setPoints(Integer.parseInt(save2.get(1)));
+        setTotalPoints(Integer.parseInt(save2.get(1)));
         livesLeft = Integer.parseInt(save2.get(2));
         stats = campaignStats[currentLevel - 1];
     }
 
     public static void loadSave3() {
         currentLevel = Integer.parseInt(save3.get(0));
-        setPoints(Integer.parseInt(save3.get(1)));
+        setTotalPoints(Integer.parseInt(save3.get(1)));
         livesLeft = Integer.parseInt(save3.get(2));
         stats = campaignStats[currentLevel - 1];
 
@@ -567,7 +573,7 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
             stopLaunchGame = false;
             gameScreen.addComponent(backButton);
             gameScreen.write("Lives: " + "♥".repeat(livesLeft), Positions.create(15, 42)).invoke();
-            gameScreen.write("Credits: " + points, Positions.create(60, 42)).invoke();
+            gameScreen.write("Credits: " + totalPoints, Positions.create(60, 42)).invoke();
             gameScreen.write("Level: " + currentLevel, Positions.create(73, 1)).invoke();
             gameScreen.display();
             Runnable runnable = () -> {
@@ -591,7 +597,7 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
             stopLaunchGame = false;
             gameScreen.addComponent(backButton);
             gameScreen.write("Lives: " + "♥".repeat(livesLeft), Positions.create(15, 42)).invoke();
-            gameScreen.write("Credits: " + points, Positions.create(60, 42)).invoke();
+            gameScreen.write("Credits: " + totalPoints, Positions.create(60, 42)).invoke();
             gameScreen.write("Level: " + currentLevel, Positions.create(73, 1)).invoke();
             gameScreen.display();
             Runnable runnable = () -> {
@@ -615,8 +621,8 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
             stopLaunchGame = false;
             gameScreen.addComponent(backButton);
             gameScreen.write("Lives: " + "♥".repeat(livesLeft), Positions.create(15, 42)).invoke();
-            gameScreen.write("Credits: " + points, Positions.create(60, 42)).invoke();
-            gameScreen.write("Level: 1", Positions.create(73, 1)).invoke();
+            gameScreen.write("Credits: " + totalPoints, Positions.create(60, 42)).invoke();
+            gameScreen.write("Level: " + currentLevel, Positions.create(73, 1)).invoke();
             gameScreen.display();
             Runnable runnable = () -> {
                 try {
@@ -832,7 +838,7 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
             currentLevel = 1;
             gameScreen.addComponent(backButton);
             gameScreen.write("Lives: " + "♥".repeat(livesLeft), Positions.create(15, 42)).invoke();
-            gameScreen.write("Credits: " + points, Positions.create(60, 42)).invoke();
+            gameScreen.write("Credits: " + totalPoints, Positions.create(60, 42)).invoke();
             gameScreen.write("Level: " + currentLevel, Positions.create(73, 1)).invoke();
             gameScreen.display();
             Runnable runnable = () -> {
@@ -1004,7 +1010,7 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
             currentLevel++;
             stats = campaignStats[currentLevel - 1];
             gameScreen.write("Lives: " + "♥".repeat(livesLeft), Positions.create(15, 42)).invoke();
-            gameScreen.write("Credits: " + points, Positions.create(60, 42)).invoke();
+            gameScreen.write("Credits: " + totalPoints, Positions.create(60, 42)).invoke();
             gameScreen.write("Level: " + currentLevel, Positions.create(73, 1)).invoke();
             gameScreen.display();
             Runnable runnable = () -> {
