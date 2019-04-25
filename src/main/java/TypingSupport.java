@@ -49,7 +49,9 @@ public class TypingSupport { // See klass tegeleb kasutaja poolt sisestatud teks
                         points += sb.length() * 10;
                         Game.setPoints(points);
                         System.out.println(Game.getPoints());
+                        if (Game.getGameStyle().equals("ARCADE"))
                         Game.getGameScreen().write("Points: " + points, Positions.create(60, 42)).invoke();
+                        else Game.getGameScreen().write("Credits: " + points, Positions.create(60, 42)).invoke();
                         tileGrid.removeLayer(Game.getWordsOnScreen().get(sb.toString()));
                         Game.getWordsOnScreen().remove(sb.toString());
                     }
