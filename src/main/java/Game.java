@@ -170,19 +170,35 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
     }
 
     public static void writeSaveState() {
+        String filename = "Saves.txt";
         Timestamp timestamp = new java.sql.Timestamp(System.currentTimeMillis());
-        try {
-            String filename = "Saves.txt";
-            FileWriter fw = new FileWriter(filename, true);
-            fw.write(saveClicked + " " + currentLevel + " " + getPoints() + " " + getLivesLeft() + " " + timestamp + "\n");
-            fw.close();
+        try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
+            String row;
+            ArrayList<String[]> rows = new ArrayList<>();
+            while ((row = br.readLine()) != null) {
+                rows.add(row.split(","));
+            }
+            try (FileWriter fw = new FileWriter(filename)) {
+                String[] save = rows.get(saveClicked - 1);
+                save[0] = String.valueOf(saveClicked);
+                save[1] = String.valueOf(currentLevel);
+                save[2] = String.valueOf(getPoints());
+                save[3] = String.valueOf(getLivesLeft());
+                save[4] = timestamp.toString();
+                //save[5] = "";
+                for (String[] x : rows) {
+                    for (String y : x) {
+                        fw.write(y + ",");
+                    }
+                    fw.write("\n");
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     public static void loadSave1() {
-        System.out.println(save1);
         currentLevel = Integer.parseInt(save1.get(0));
         setPoints(Integer.parseInt(save1.get(1)));
         livesLeft = Integer.parseInt(save1.get(2));
@@ -209,7 +225,7 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
         try (BufferedReader in = new BufferedReader((new FileReader("Saves.txt")));
         ) {
             while ((rida = in.readLine()) != null) {
-                String[] line = rida.split(" ");
+                String[] line = rida.split(",");
                 if (line[0].equals("1")) {
                     save1.add(line[1]);
                     save1.add(line[2]);
@@ -501,7 +517,7 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
         Button choose3 = Components.button().withText("CHOOSE").withPosition(Positions.create(4, 7)).build();
         loadSaveState();
         Panel savePanel1 = Components.panel()
-                .withPosition(Positions.create(13, 16))
+                .withPosition(Positions.create(15, 16))
                 .withSize(18, 11)
                 .withTitle("Save 1")
                 .wrapWithBox(true)
@@ -515,7 +531,7 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
                 .build();
 
         Panel savePanel2 = Components.panel()
-                .withPosition(Positions.create(34, 16))
+                .withPosition(Positions.create(33, 16))
                 .withSize(18, 11)
                 .withTitle("Save 2")
                 .wrapWithBox(true)
@@ -529,7 +545,7 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
                 .build();
 
         Panel savePanel3 = Components.panel()
-                .withPosition(Positions.create(55, 16))
+                .withPosition(Positions.create(51, 16))
                 .withSize(18, 11)
                 .withTitle("Save 3")
                 .wrapWithBox(true)
@@ -613,6 +629,11 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
             t.start();
             return UIEventResponses.preventDefault();
         });
+        Button backToCampaignMenu = Components.button().withText("BACK").withPosition(Positions.offset1x1()).build();
+        backToCampaignMenu.onComponentEvent(ComponentEventType.ACTIVATED, (event) -> {
+            campaignLevelScreen.display();
+            return UIEventResponses.preventDefault();
+        });
 
         savePanel1.addComponent(saveBox1);
         savePanel2.addComponent(saveBox2);
@@ -623,6 +644,7 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
         chooseSave.addComponent(savePanel1);
         chooseSave.addComponent(savePanel2);
         chooseSave.addComponent(savePanel3);
+        chooseSave.addComponent(backToCampaignMenu);
     }
 
 
@@ -723,12 +745,12 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
     public static void main(String[] args) throws Exception {
         try {
             File f = new File("Saves.txt");
-            if (!f.exists()) {
+            if (!f.exists() || f.length() == 0) {
                 Timestamp timestamp = new java.sql.Timestamp(System.currentTimeMillis());
                 FileWriter fw = new FileWriter("Saves.txt");
-                fw.write("1 1 0 3" + timestamp + "\n");
-                fw.write("2 1 0 3" + timestamp + "\n");
-                fw.write("3 1 0 3" + timestamp + "\n");
+                fw.write("1,1,0,3," + timestamp + "\n");
+                fw.write("2,1,0,3," + timestamp + "\n");
+                fw.write("3,1,0,3," + timestamp + "\n");
                 fw.close();
             }
         } catch (Exception e) {
@@ -796,7 +818,7 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
             writeSaveState();
             return UIEventResponses.preventDefault();
         });
-        saveSlot2.onComponentEvent(ComponentEventType.ACTIVATED, (event) -> {
+        saveSlot3.onComponentEvent(ComponentEventType.ACTIVATED, (event) -> {
             saveClicked = 3;
             writeSaveState();
             return UIEventResponses.preventDefault();
@@ -976,11 +998,11 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
             return UIEventResponses.preventDefault();
         });
 
-        next_level.onComponentEvent(ComponentEventType.ACTIVATED, (event)-> {
+        next_level.onComponentEvent(ComponentEventType.ACTIVATED, (event) -> {
             gameRunning = true;
             stopLaunchGame = false;
             currentLevel++;
-            stats = campaignStats[currentLevel-1];
+            stats = campaignStats[currentLevel - 1];
             gameScreen.write("Lives: " + "♥".repeat(livesLeft), Positions.create(15, 42)).invoke();
             gameScreen.write("Credits: " + points, Positions.create(60, 42)).invoke();
             gameScreen.write("Level: " + currentLevel, Positions.create(73, 1)).invoke();
