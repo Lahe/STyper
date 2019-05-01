@@ -1,18 +1,10 @@
 import org.hexworks.zircon.api.*;
-import org.hexworks.zircon.api.builder.component.ButtonBuilder;
-import org.hexworks.zircon.api.builder.component.LabelBuilder;
-import org.hexworks.zircon.api.builder.component.TextBoxBuilder;
 import org.hexworks.zircon.api.component.*;
-import org.hexworks.zircon.api.graphics.BoxType;
 import org.hexworks.zircon.api.graphics.Layer;
 import org.hexworks.zircon.api.grid.TileGrid;
 import org.hexworks.zircon.api.resource.BuiltInCP437TilesetResource;
-import org.hexworks.zircon.api.resource.ColorThemeResource;
-import org.hexworks.zircon.api.resource.TilesetResource;
 import org.hexworks.zircon.api.screen.Screen;
-import org.hexworks.zircon.api.tileset.Tileset;
 import org.hexworks.zircon.api.uievent.ComponentEventType;
-import org.hexworks.zircon.internal.component.renderer.NoOpComponentRenderer;
 
 import java.io.*;
 import java.sql.Timestamp;
@@ -92,14 +84,26 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
     private static boolean stopLaunchGame = false;
     private static boolean gameRunning = true;
     private static String winOrLose;
-    public static List<Integer> easyTops = new ArrayList<>();
-    public static List<Integer> mediumTops = new ArrayList<>();
-    public static List<Integer> hardTops = new ArrayList<>();
-    public static List<Integer> extremeTops = new ArrayList<>();
-    public static List<Integer> insaneTops = new ArrayList<>();
-    public static List<String> save1 = new ArrayList<>();
-    public static List<String> save2 = new ArrayList<>();
-    public static List<String> save3 = new ArrayList<>();
+    private static List<Integer> easyTops = new ArrayList<>();
+    private static List<Integer> mediumTops = new ArrayList<>();
+    private static List<Integer> hardTops = new ArrayList<>();
+    private static List<Integer> extremeTops = new ArrayList<>();
+    private static List<Integer> insaneTops = new ArrayList<>();
+    private static List<String> save1 = new ArrayList<>();
+    private static List<String> save2 = new ArrayList<>();
+    private static List<String> save3 = new ArrayList<>();
+    private static boolean boosterStatus = false;
+    private static boolean nukeStatus = false;
+    private static boolean slowStatus = false;
+    private static boolean boosterActive = false;
+
+    public static boolean isBoosterActive() {
+        return boosterActive;
+    }
+
+    public static void setBoosterActive(boolean boosterActive) {
+        Game.boosterActive = boosterActive;
+    }
 
     private static String gameStyle = "";
 
@@ -147,6 +151,22 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
         Game.totalPoints = totalPoints;
     }
 
+    public static boolean isNukeStatus() {
+        return nukeStatus;
+    }
+
+    public static boolean isSlowStatus() { return slowStatus; }
+
+    public static boolean isBoosterStatus() {
+        return boosterStatus;
+    }
+
+    public static void setBoosterStatus(boolean boosterStatus) { Game.boosterStatus = boosterStatus; }
+
+    public static void setNukeStatus(boolean nukeStatus) { Game.nukeStatus = nukeStatus; }
+
+    public static void setSlowStatus(boolean slowStatus) { Game.slowStatus = slowStatus; }
+
     public static HashMap<String, Layer> getWordsOnScreen() {
         return wordsOnScreen;
     }
@@ -187,10 +207,13 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
             try (FileWriter fw = new FileWriter(filename)) {
                 String[] save = rows.get(saveClicked - 1);
                 save[0] = String.valueOf(saveClicked);
-                save[1] = String.valueOf(currentLevel+1);
+                save[1] = String.valueOf(currentLevel + 1);
                 save[2] = String.valueOf(totalPoints);
                 save[3] = String.valueOf(getLivesLeft());
-                save[4] = timestamp.toString();
+                save[4] = Boolean.toString(boosterStatus);
+                save[5] = Boolean.toString(nukeStatus);
+                save[6] = Boolean.toString(slowStatus);
+                save[7] = timestamp.toString();
                 //save[5] = "";
                 for (String[] x : rows) {
                     for (String y : x) {
@@ -205,10 +228,14 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
     }
 
     public static void loadSave1() {
+        System.out.println(save1);
         currentLevel = Integer.parseInt(save1.get(0));
         setTotalPoints(Integer.parseInt(save1.get(1)));
         livesLeft = Integer.parseInt(save1.get(2));
         stats = campaignStats[currentLevel - 1];
+        boosterStatus = Boolean.valueOf(save1.get(3));
+        nukeStatus = Boolean.valueOf(save1.get(4));
+        slowStatus = Boolean.valueOf(save1.get(5));
     }
 
     public static void loadSave2() {
@@ -216,6 +243,9 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
         setTotalPoints(Integer.parseInt(save2.get(1)));
         livesLeft = Integer.parseInt(save2.get(2));
         stats = campaignStats[currentLevel - 1];
+        boosterStatus = Boolean.valueOf(save2.get(3));
+        nukeStatus = Boolean.valueOf(save2.get(4));
+        slowStatus = Boolean.valueOf(save2.get(5));
     }
 
     public static void loadSave3() {
@@ -223,6 +253,9 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
         setTotalPoints(Integer.parseInt(save3.get(1)));
         livesLeft = Integer.parseInt(save3.get(2));
         stats = campaignStats[currentLevel - 1];
+        boosterStatus = Boolean.valueOf(save3.get(3));
+        nukeStatus = Boolean.valueOf(save3.get(4));
+        slowStatus = Boolean.valueOf(save3.get(5));
 
     }
 
@@ -236,16 +269,25 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
                     save1.add(line[1]);
                     save1.add(line[2]);
                     save1.add(line[3]);
+                    save1.add(line[4]);
+                    save1.add(line[5]);
+                    save1.add(line[6]);
                 }
                 if (line[0].equals("2")) {
                     save2.add(line[1]);
                     save2.add(line[2]);
                     save2.add(line[3]);
+                    save2.add(line[4]);
+                    save2.add(line[5]);
+                    save2.add(line[6]);
                 }
                 if (line[0].equals("3")) {
                     save3.add(line[1]);
                     save3.add(line[2]);
                     save3.add(line[3]);
+                    save3.add(line[4]);
+                    save3.add(line[5]);
+                    save3.add(line[6]);
                 }
             }
         }
@@ -575,6 +617,9 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
             gameScreen.write("Lives: " + "♥".repeat(livesLeft), Positions.create(15, 42)).invoke();
             gameScreen.write("Credits: " + totalPoints, Positions.create(60, 42)).invoke();
             gameScreen.write("Level: " + currentLevel, Positions.create(73, 1)).invoke();
+            if (boosterStatus) gameScreen.write("Booster: OK", Positions.create(1, 42)).invoke();
+            if (nukeStatus) gameScreen.write("Nuke: OK", Positions.create(1, 41)).invoke();
+            if (slowStatus) gameScreen.write("Slow-Mo: OK", Positions.create(1, 43)).invoke();
             gameScreen.display();
             Runnable runnable = () -> {
                 try {
@@ -599,6 +644,9 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
             gameScreen.write("Lives: " + "♥".repeat(livesLeft), Positions.create(15, 42)).invoke();
             gameScreen.write("Credits: " + totalPoints, Positions.create(60, 42)).invoke();
             gameScreen.write("Level: " + currentLevel, Positions.create(73, 1)).invoke();
+            if (boosterStatus) gameScreen.write("Booster: OK", Positions.create(1, 42)).invoke();
+            if (nukeStatus) gameScreen.write("Nuke: OK", Positions.create(1, 41)).invoke();
+            if (slowStatus) gameScreen.write("Slow-Mo: OK", Positions.create(1, 43)).invoke();
             gameScreen.display();
             Runnable runnable = () -> {
                 try {
@@ -623,6 +671,9 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
             gameScreen.write("Lives: " + "♥".repeat(livesLeft), Positions.create(15, 42)).invoke();
             gameScreen.write("Credits: " + totalPoints, Positions.create(60, 42)).invoke();
             gameScreen.write("Level: " + currentLevel, Positions.create(73, 1)).invoke();
+            if (boosterStatus) gameScreen.write("Booster: OK", Positions.create(1, 42)).invoke();
+            if (nukeStatus) gameScreen.write("Nuke: OK", Positions.create(1, 41)).invoke();
+            if (slowStatus) gameScreen.write("Slow-Mo: OK", Positions.create(1, 43)).invoke();
             gameScreen.display();
             Runnable runnable = () -> {
                 try {
@@ -656,36 +707,28 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
 
     public static void shopItems() {
         Panel boosterPanel = Components.panel()
-                .withPosition(Positions.create(30, 5)) // X 36 KESKMISE JAOKS 4 on vahe
-                .withSize(26, 8)
+                .withPosition(Positions.create(29, 5))
+                .withSize(27, 8)
                 .withTitle("Booster")
                 .wrapWithBox(true)
                 .build();
 
         Button buyBooster = Components.button().withText("BUY").withPosition(Positions.create(10, 5)).build();
-        buyBooster.onComponentEvent(ComponentEventType.ACTIVATED, (event) -> {
-            //lisab boosteritesse +1
-            return UIEventResponses.preventDefault();
-        });
 
         TextBox boosterBox = Components.textBox()
                 .withPosition(Positions.create(0, 1))
-                .withContentWidth(24)
-                .addParagraph("Boosts point gain by 2x")
+                .withContentWidth(25)
+                .addParagraph("Boosts credit gain by 2x")
                 .addParagraph("Cost: 1000")
                 .build();
 
         Panel nukePanel = Components.panel()
-                .withPosition(Positions.create(30, 13)) // X 36 KESKMISE JAOKS 4 on vahe
-                .withSize(26, 8)
+                .withPosition(Positions.create(29, 13))
+                .withSize(27, 8)
                 .withTitle("Nuke")
                 .wrapWithBox(true)
                 .build();
         Button buyNuke = Components.button().withText("BUY").withPosition(Positions.create(10, 5)).build();
-        buyNuke.onComponentEvent(ComponentEventType.ACTIVATED, (event) -> {
-            //lisab nukedesse +1
-            return UIEventResponses.preventDefault();
-        });
 
         TextBox nukeBox = Components.textBox()
                 .withPosition(Positions.create(0, 1))
@@ -695,35 +738,27 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
                 .build();
 
         Panel slowPanel = Components.panel()
-                .withPosition(Positions.create(30, 21)) // X 36 KESKMISE JAOKS 4 on vahe
-                .withSize(26, 8)
+                .withPosition(Positions.create(29, 21))
+                .withSize(27, 8)
                 .withTitle("Slow-mo")
                 .wrapWithBox(true)
                 .build();
         Button buySlow = Components.button().withText("BUY").withPosition(Positions.create(10, 5)).build();
-        buySlow.onComponentEvent(ComponentEventType.ACTIVATED, (event) -> {
-            //lisab slowmodesse +1
-            return UIEventResponses.preventDefault();
-        });
 
         TextBox slowBox = Components.textBox()
                 .withPosition(Positions.create(0, 1))
                 .withContentWidth(24)
-                .addParagraph("Slows down words")
+                .addParagraph("Slows down words by 2x")
                 .addParagraph("Cost: 1000")
                 .build();
 
         Panel livesPanel = Components.panel()
-                .withPosition(Positions.create(30, 29)) // X 36 KESKMISE JAOKS 4 on vahe
-                .withSize(26, 8)
+                .withPosition(Positions.create(29, 29))
+                .withSize(27, 8)
                 .withTitle("Lives")
                 .wrapWithBox(true)
                 .build();
         Button buyLives = Components.button().withText("BUY").withPosition(Positions.create(10, 5)).build();
-        buyLives.onComponentEvent(ComponentEventType.ACTIVATED, (event) -> {
-            //lisab eludesse +1
-            return UIEventResponses.preventDefault();
-        });
 
         TextBox livesBox = Components.textBox()
                 .withPosition(Positions.create(0, 1))
@@ -732,6 +767,48 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
                 .addParagraph("Cost: 5000")
                 .build();
 
+        buyBooster.onComponentEvent(ComponentEventType.ACTIVATED, (event) -> {
+            if (boosterStatus) shopScreen.write("Booster already in inventory", Positions.create(30, 40)).invoke();
+            else if (totalPoints >= 1000) {
+                boosterStatus = true;
+                totalPoints -= 1000;
+                shopScreen.write("Credits: " + totalPoints + " ".repeat(10), Positions.create(30, 3)).invoke();
+                shopScreen.write("Booster bought. Type \"launchbooster\" in-game to activate.", Positions.create(10, 40)).invoke();
+
+            } else shopScreen.write("Not enough dollar" + " ".repeat(20), Positions.create(30, 40)).invoke();
+            return UIEventResponses.preventDefault();
+        });
+        buyNuke.onComponentEvent(ComponentEventType.ACTIVATED, (event) -> {
+            if (nukeStatus) shopScreen.write("Nuke already in inventory", Positions.create(30, 40)).invoke();
+            else if (totalPoints >= 2500) {
+                nukeStatus = true;
+                totalPoints -= 2500;
+                shopScreen.write("Credits: " + totalPoints + " ".repeat(10), Positions.create(30, 3)).invoke();
+                shopScreen.write("Nuke bought. Type \"launchnuke\" in-game to activate.", Positions.create(10, 40)).invoke();
+
+            } else shopScreen.write("Not enough dollar" + " ".repeat(20), Positions.create(30, 40)).invoke();
+            return UIEventResponses.preventDefault();
+        });
+        buySlow.onComponentEvent(ComponentEventType.ACTIVATED, (event) -> {
+            if (slowStatus) shopScreen.write("Slow-mo already in inventory", Positions.create(30, 40)).invoke();
+            else if (totalPoints >= 1000) {
+                slowStatus = true;
+                totalPoints -= 1000;
+                shopScreen.write("Credits: " + totalPoints + " ".repeat(10), Positions.create(30, 3)).invoke();
+                shopScreen.write("Slow-mo bought. Type \"launchslowmo\" in-game to activate.", Positions.create(10, 40)).invoke();
+            } else shopScreen.write("Not enough dollar" + " ".repeat(20), Positions.create(30, 40)).invoke();
+            return UIEventResponses.preventDefault();
+        });
+        buyLives.onComponentEvent(ComponentEventType.ACTIVATED, (event) -> {
+            if (totalPoints >= 5000) {
+                totalPoints -= 5000;
+                shopScreen.write("Credits: " + totalPoints + " ".repeat(10), Positions.create(30, 3)).invoke();
+                shopScreen.write("1 extra life bought" + " ".repeat(20), Positions.create(30, 40)).invoke();
+
+                livesLeft += 1;
+            } else shopScreen.write("Not enough dollar" + " ".repeat(20), Positions.create(30, 40)).invoke();
+            return UIEventResponses.preventDefault();
+        });
         boosterPanel.addComponent(boosterBox);
         boosterPanel.addComponent(buyBooster);
         nukePanel.addComponent(nukeBox);
@@ -754,9 +831,9 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
             if (!f.exists() || f.length() == 0) {
                 Timestamp timestamp = new java.sql.Timestamp(System.currentTimeMillis());
                 FileWriter fw = new FileWriter("Saves.txt");
-                fw.write("1,1,0,3," + timestamp + "\n");
-                fw.write("2,1,0,3," + timestamp + "\n");
-                fw.write("3,1,0,3," + timestamp + "\n");
+                fw.write("1,1,0,3,false,false,false," + timestamp + "\n"); //booster - nuke - slow-mo
+                fw.write("2,1,0,3,false,false,false," + timestamp + "\n");
+                fw.write("3,1,0,3,false,false,false," + timestamp + "\n");
                 fw.close();
             }
         } catch (Exception e) {
@@ -815,16 +892,19 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
         });
 
         saveSlot1.onComponentEvent(ComponentEventType.ACTIVATED, (event) -> {
+            levelCompleteScreen.write("Saved in slot 1",Positions.create(33,12)).invoke();
             saveClicked = 1;
             writeSaveState();
             return UIEventResponses.preventDefault();
         });
         saveSlot2.onComponentEvent(ComponentEventType.ACTIVATED, (event) -> {
+            levelCompleteScreen.write("Saved in slot 2",Positions.create(33,12)).invoke();
             saveClicked = 2;
             writeSaveState();
             return UIEventResponses.preventDefault();
         });
         saveSlot3.onComponentEvent(ComponentEventType.ACTIVATED, (event) -> {
+            levelCompleteScreen.write("Saved in slot 3",Positions.create(33,12)).invoke();
             saveClicked = 3;
             writeSaveState();
             return UIEventResponses.preventDefault();
@@ -836,6 +916,7 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
             stopLaunchGame = false;
             stats = campaignStats[0];
             currentLevel = 1;
+            totalPoints = 0;
             gameScreen.addComponent(backButton);
             gameScreen.write("Lives: " + "♥".repeat(livesLeft), Positions.create(15, 42)).invoke();
             gameScreen.write("Credits: " + totalPoints, Positions.create(60, 42)).invoke();
@@ -868,6 +949,8 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
         shopItems();
         shopButton.onComponentEvent(ComponentEventType.ACTIVATED, (event) -> {
             shopScreen.display();
+            shopScreen.write("Credits: " + totalPoints, Positions.create(30, 3)).invoke();
+            shopScreen.write(" ".repeat(90) + "xd", Positions.create(10, 40)).invoke();
             return UIEventResponses.preventDefault();
         });
 
@@ -1009,9 +1092,13 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
             stopLaunchGame = false;
             currentLevel++;
             stats = campaignStats[currentLevel - 1];
+            boosterActive = false;
             gameScreen.write("Lives: " + "♥".repeat(livesLeft), Positions.create(15, 42)).invoke();
             gameScreen.write("Credits: " + totalPoints, Positions.create(60, 42)).invoke();
             gameScreen.write("Level: " + currentLevel, Positions.create(73, 1)).invoke();
+            if (boosterStatus) gameScreen.write("Booster: OK", Positions.create(1, 42)).invoke();
+            if (nukeStatus) gameScreen.write("Nuke: OK", Positions.create(1, 41)).invoke();
+            if (slowStatus) gameScreen.write("Slow-Mo: OK", Positions.create(1, 43)).invoke();
             gameScreen.display();
             Runnable runnable = () -> {
                 try {
