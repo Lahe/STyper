@@ -7,6 +7,7 @@ import org.hexworks.zircon.api.screen.Screen;
 import org.hexworks.zircon.api.uievent.ComponentEventType;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.sql.Timestamp;
 import java.util.*;
 
@@ -32,7 +33,6 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
     private static final Screen scoreScreen = Screens.createScreenFor(tileGrid);
     private static final Screen shopScreen = Screens.createScreenFor(tileGrid);
     private static final Screen campaignLevelScreen = Screens.createScreenFor(tileGrid);
-    private static final Screen savesScreen = Screens.createScreenFor(tileGrid);
     private static final Screen levelCompleteScreen = Screens.createScreenFor(tileGrid);
     private static final Screen chooseSave = Screens.createScreenFor(tileGrid);
     private static final Button shopButton = Components.button().withText("SHOP").withPosition(Positions.create(20, 30)).build();
@@ -54,7 +54,6 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
     private static final Button newGameButton = Components.button().withText("NEW GAME").withPosition(Positions.create(38, 23)).build();
     private static final Button backToMenuButton = Components.button().withText("BACK").withPosition(Positions.offset1x1()).build();
     private static final Button backToMenuButton2 = Components.button().withText("BACK").withPosition(Positions.offset1x1()).build();
-    private static final Button backToMenuButton3 = Components.button().withText("BACK").withPosition(Positions.offset1x1()).build();
     private static final Button backToMenuButton4 = Components.button().withText("QUIT").withPosition(Positions.offset1x1()).build();
     private static final Button backToLevelCompleteScreen = Components.button().withText("BACK").withPosition(Positions.offset1x1()).build();
     private static final Button next_level = Components.button().withText("NEXT LEVEL").withPosition(Positions.create(60, 30)).build();
@@ -197,7 +196,7 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
         }
         try {
             String filename = "Leaderboards.txt";
-            FileWriter fw = new FileWriter(filename, true);
+            FileWriter fw = new FileWriter(filename, Charset.forName("UTF-8"), true);
             fw.write(timestamp + " " + winOrLose + " " + difficultyLevel + " " + totalPoints + "\n");
             fw.close();
         } catch (IOException ex) {
@@ -224,7 +223,6 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
                 save[5] = Boolean.toString(nukeStatus);
                 save[6] = Boolean.toString(slowStatus);
                 save[7] = timestamp.toString();
-                //save[5] = "";
                 for (String[] x : rows) {
                     for (String y : x) {
                         fw.write(y + ",");
@@ -237,36 +235,15 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
         }
     }
 
-    public static void loadSave1() {
-        System.out.println(save1);
-        currentLevel = Integer.parseInt(save1.get(0));
-        setTotalPoints(Integer.parseInt(save1.get(1)));
-        livesLeft = Integer.parseInt(save1.get(2));
+    public static void loadSave(List<String> saveInfo) {
+        System.out.println(saveInfo);
+        currentLevel = Integer.parseInt(saveInfo.get(0));
+        setTotalPoints(Integer.parseInt(saveInfo.get(1)));
+        livesLeft = Integer.parseInt(saveInfo.get(2));
         stats = campaignStats[currentLevel - 1];
-        boosterStatus = Boolean.valueOf(save1.get(3));
-        nukeStatus = Boolean.valueOf(save1.get(4));
-        slowStatus = Boolean.valueOf(save1.get(5));
-    }
-
-    public static void loadSave2() {
-        currentLevel = Integer.parseInt(save2.get(0));
-        setTotalPoints(Integer.parseInt(save2.get(1)));
-        livesLeft = Integer.parseInt(save2.get(2));
-        stats = campaignStats[currentLevel - 1];
-        boosterStatus = Boolean.valueOf(save2.get(3));
-        nukeStatus = Boolean.valueOf(save2.get(4));
-        slowStatus = Boolean.valueOf(save2.get(5));
-    }
-
-    public static void loadSave3() {
-        currentLevel = Integer.parseInt(save3.get(0));
-        setTotalPoints(Integer.parseInt(save3.get(1)));
-        livesLeft = Integer.parseInt(save3.get(2));
-        stats = campaignStats[currentLevel - 1];
-        boosterStatus = Boolean.valueOf(save3.get(3));
-        nukeStatus = Boolean.valueOf(save3.get(4));
-        slowStatus = Boolean.valueOf(save3.get(5));
-
+        boosterStatus = Boolean.valueOf(saveInfo.get(3));
+        nukeStatus = Boolean.valueOf(saveInfo.get(4));
+        slowStatus = Boolean.valueOf(saveInfo.get(5));
     }
 
     public static void loadSaveState() throws Exception {
@@ -275,98 +252,63 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
         ) {
             while ((rida = in.readLine()) != null) {
                 String[] line = rida.split(",");
-                if (line[0].equals("1")) {
-                    save1.add(line[1]);
-                    save1.add(line[2]);
-                    save1.add(line[3]);
-                    save1.add(line[4]);
-                    save1.add(line[5]);
-                    save1.add(line[6]);
-                }
-                if (line[0].equals("2")) {
-                    save2.add(line[1]);
-                    save2.add(line[2]);
-                    save2.add(line[3]);
-                    save2.add(line[4]);
-                    save2.add(line[5]);
-                    save2.add(line[6]);
-                }
-                if (line[0].equals("3")) {
-                    save3.add(line[1]);
-                    save3.add(line[2]);
-                    save3.add(line[3]);
-                    save3.add(line[4]);
-                    save3.add(line[5]);
-                    save3.add(line[6]);
+                switch (line[0]) {
+                    case "1":
+                        for (int i = 1; i < 7; i++) {
+                            save1.add(line[i]);
+                        }
+                        break;
+                    case "2":
+                        for (int i = 1; i < 7; i++) {
+                            save2.add(line[i]);
+                        }
+                        break;
+                    case "3":
+                        for (int i = 1; i < 7; i++) {
+                            save3.add(line[i]);
+                        }
+                        break;
                 }
             }
         }
     }
 
+    public static void addScoreToTopList(List<Integer> tops, String[] line) {
+        int score = Integer.parseInt(line[4]);
+        if (tops.size() < 5) {
+            tops.add(score);
+        } else {
+            if (Collections.min(tops) < score) {
+                tops.set(tops.indexOf(Collections.min(tops)), score);
+            }
+        }
+        Collections.sort(tops, Collections.reverseOrder());
+    }
+
     public static void scoresFromFile() {
         String rida;
-        try (
-                BufferedReader in = new BufferedReader((new FileReader("Leaderboards.txt")));
-        ) {
+        try (BufferedReader in = new BufferedReader((new FileReader("Leaderboards.txt", Charset.forName("UTF-8"))))) {
             while ((rida = in.readLine()) != null) {
                 String[] line = rida.split(" ");
-                if (line[3].equals("Easy")) {
-                    int score = Integer.parseInt(line[4]);
-                    if (easyTops.size() < 5) {
-                        easyTops.add(score);
-                    } else {
-                        if (Collections.min(easyTops) < score) {
-                            easyTops.set(easyTops.indexOf(Collections.min(easyTops)), score);
-                        }
-                    }
-                } else if (line[3].equals("Medium")) {
-                    int score = Integer.parseInt(line[4]);
-                    if (mediumTops.size() < 5) {
-                        mediumTops.add(score);
-                    } else {
-                        if (Collections.min(mediumTops) < score) {
-                            mediumTops.set(mediumTops.indexOf(Collections.min(mediumTops)), score);
-                        }
-                    }
-                } else if (line[3].equals("Hard")) {
-                    int score = Integer.parseInt(line[4]);
-                    if (hardTops.size() < 5) {
-                        hardTops.add(score);
-                    } else {
-                        if (Collections.min(hardTops) < score) {
-                            hardTops.set(hardTops.indexOf(Collections.min(hardTops)), score);
-                        }
-                    }
-                } else if (line[3].equals("Insane")) {
-                    int score = Integer.parseInt(line[4]);
-                    if (insaneTops.size() < 5) {
-                        insaneTops.add(score);
-                    } else {
-                        if (Collections.min(insaneTops) < score) {
-                            insaneTops.set(insaneTops.indexOf(Collections.min(insaneTops)), score);
-                        }
-                    }
-                } else if (line[3].equals("Extreme")) {
-                    int score = Integer.parseInt(line[4]);
-                    if (extremeTops.size() < 5) {
-                        extremeTops.add(score);
-                    } else {
-                        if (Collections.min(extremeTops) < score) {
-                            extremeTops.set(extremeTops.indexOf(Collections.min(extremeTops)), score);
-                        }
-                    }
+                switch (line[3]) {
+                    case "Easy":
+                        addScoreToTopList(easyTops, line);
+                        break;
+                    case "Medium":
+                        addScoreToTopList(mediumTops, line);
+                        break;
+                    case "Hard":
+                        addScoreToTopList(hardTops, line);
+                        break;
+                    case "Insane":
+                        addScoreToTopList(insaneTops, line);
+                        break;
+                    case "Extreme":
+                        addScoreToTopList(extremeTops, line);
+                        break;
                 }
             }
-            Collections.sort(easyTops, Collections.reverseOrder());
-            Collections.sort(mediumTops, Collections.reverseOrder());
-            Collections.sort(hardTops, Collections.reverseOrder());
-            Collections.sort(insaneTops, Collections.reverseOrder());
-            Collections.sort(extremeTops, Collections.reverseOrder());
-
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -378,97 +320,45 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
         return "-";
     }
 
+    public static TextBox buildScoreTextBoxes(List<Integer> tops) {
+        return Components.textBox()
+                .withPosition(Positions.create(0, 1))
+                .withContentWidth(13)
+                .addParagraph("RANK | SCORE")
+                .addParagraph("1ST    " + getScore(tops, 0))
+                .addParagraph("2ND    " + getScore(tops, 1))
+                .addParagraph("3RD    " + getScore(tops, 2))
+                .addParagraph("4TH    " + getScore(tops, 3))
+                .addParagraph("5TH    " + getScore(tops, 4))
+                .build();
+    }
+
+    public static Panel buildScorePanels(int x, int y, String title) {
+        return Components.panel()
+                .withPosition(Positions.create(x, y))
+                .withSize(15, 15)
+                .withTitle(title)
+                .wrapWithBox(true)
+                .build();
+    }
+
     public static void showScores() {
+        final Button backToMenuButtonScores = Components.button().withText("BACK").withPosition(Positions.offset1x1()).build();
+        backToMenuButtonScores.onComponentEvent(ComponentEventType.ACTIVATED, (event) -> {
+            menuScreen.display();
+            return UIEventResponses.preventDefault();
+        });
         scoresFromFile();
-        Panel easyPanel = Components.panel()
-                .withPosition(Positions.create(19, 8)) // X 36 KESKMISE JAOKS 4 on vahe
-                .withSize(15, 15)
-                .withTitle("Easy")
-                .wrapWithBox(true)
-                .build();
-
-        TextBox easyBox = Components.textBox()
-                .withPosition(Positions.create(0, 1))
-                .withContentWidth(13)
-                .addParagraph("RANK | SCORE")
-                .addParagraph("1ST    " + getScore(easyTops, 0))
-                .addParagraph("2ND    " + getScore(easyTops, 1))
-                .addParagraph("3RD    " + getScore(easyTops, 2))
-                .addParagraph("4TH    " + getScore(easyTops, 3))
-                .addParagraph("5TH    " + getScore(easyTops, 4))
-                .build();
-
-        Panel mediumPanel = Components.panel()
-                .withPosition(Positions.create(36, 8)) // X 36 KESKMISE JAOKS 4 on vahe
-                .withSize(15, 15)
-                .withTitle("Medium")
-                .wrapWithBox(true)
-                .build();
-
-        TextBox mediumBox = Components.textBox()
-                .withPosition(Positions.create(0, 1))
-                .withContentWidth(13)
-                .addParagraph("RANK | SCORE")
-                .addParagraph("1ST    " + getScore(mediumTops, 0))
-                .addParagraph("2ND    " + getScore(mediumTops, 1))
-                .addParagraph("3RD    " + getScore(mediumTops, 2))
-                .addParagraph("4TH    " + getScore(mediumTops, 3))
-                .addParagraph("5TH    " + getScore(mediumTops, 4))
-                .build();
-
-        Panel hardPanel = Components.panel()
-                .withPosition(Positions.create(53, 8)) // X 36 KESKMISE JAOKS 4 on vahe
-                .withSize(15, 15)
-                .withTitle("Hard")
-                .wrapWithBox(true)
-                .build();
-
-        TextBox hardBox = Components.textBox()
-                .withPosition(Positions.create(0, 1))
-                .withContentWidth(13)
-                .addParagraph("RANK | SCORE")
-                .addParagraph("1ST    " + getScore(hardTops, 0))
-                .addParagraph("2ND    " + getScore(hardTops, 1))
-                .addParagraph("3RD    " + getScore(hardTops, 2))
-                .addParagraph("4TH    " + getScore(hardTops, 3))
-                .addParagraph("5TH    " + getScore(hardTops, 4))
-                .build();
-
-        Panel insanePanel = Components.panel()
-                .withPosition(Positions.create(28, 24)) // X 36 KESKMISE JAOKS 4 on vahe
-                .withSize(15, 15)
-                .withTitle("Insane")
-                .wrapWithBox(true)
-                .build();
-        // insanePanel.applyColorTheme(ColorThemeResource.AMIGA_OS.getTheme()); Teema lisamine
-        TextBox insaneBox = Components.textBox()
-                .withPosition(Positions.create(0, 1))
-                .withContentWidth(13)
-                .addParagraph("RANK | SCORE")
-                .addParagraph("1ST    " + getScore(insaneTops, 0))
-                .addParagraph("2ND    " + getScore(insaneTops, 1))
-                .addParagraph("3RD    " + getScore(insaneTops, 2))
-                .addParagraph("4TH    " + getScore(insaneTops, 3))
-                .addParagraph("5TH    " + getScore(insaneTops, 4))
-                .build();
-
-        Panel extremePanel = Components.panel()
-                .withPosition(Positions.create(45, 24)) // X 36 KESKMISE JAOKS 4 on vahe
-                .withSize(15, 15)
-                .withTitle("Extreme")
-                .wrapWithBox(true)
-                .build();
-
-        TextBox extremeBox = Components.textBox()
-                .withPosition(Positions.create(0, 1))
-                .withContentWidth(13)
-                .addParagraph("RANK | SCORE")
-                .addParagraph("1ST    " + getScore(extremeTops, 0))
-                .addParagraph("2ND    " + getScore(extremeTops, 1))
-                .addParagraph("3RD    " + getScore(extremeTops, 2))
-                .addParagraph("4TH    " + getScore(extremeTops, 3))
-                .addParagraph("5TH    " + getScore(extremeTops, 4))
-                .build();
+        Panel easyPanel = buildScorePanels(19, 8, "Easy");
+        TextBox easyBox = buildScoreTextBoxes(easyTops);
+        Panel mediumPanel = buildScorePanels(36, 8, "Medium");
+        TextBox mediumBox = buildScoreTextBoxes(mediumTops);
+        Panel hardPanel = buildScorePanels(53, 8, "Hard");
+        TextBox hardBox = buildScoreTextBoxes(hardTops);
+        Panel insanePanel = buildScorePanels(28, 24, "Insane");
+        TextBox insaneBox = buildScoreTextBoxes(insaneTops);
+        Panel extremePanel = buildScorePanels(45, 24, "Extreme");
+        TextBox extremeBox = buildScoreTextBoxes(extremeTops);
 
         easyPanel.addComponent(easyBox);
         mediumPanel.addComponent(mediumBox);
@@ -481,7 +371,7 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
         scoreScreen.addComponent(hardPanel);
         scoreScreen.addComponent(insanePanel);
         scoreScreen.addComponent(extremePanel);
-        scoreScreen.addComponent(backToMenuButton3);
+        scoreScreen.addComponent(backToMenuButtonScores);
     }
 
     public static void clearLastGame() {
@@ -578,133 +468,69 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
         }
     }
 
+    public static Panel buildSavePanels(int x, int y, String title) {
+        return Components.panel()
+                .withPosition(Positions.create(x, y))
+                .withSize(18, 11)
+                .withTitle(title)
+                .wrapWithBox(true)
+                .build();
+    }
+
+    public static TextBox buildSaveTextBoxes(List<String> save) {
+        return Components.textBox()
+                .withPosition(Positions.create(0, 1))
+                .withContentWidth(16)
+                .addParagraph("Level: " + save.get(0))
+                .addParagraph("Credits: " + save.get(1))
+                .addParagraph("Lives: " + save.get(2))
+                .build();
+    }
+
+    public static void activateChooseSaveButton(Button choose, List<String> save) {
+        choose.onComponentEvent(ComponentEventType.ACTIVATED, (event) -> {
+            try {
+                loadSave(save);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            gameRunning = true;
+            stopLaunchGame = false;
+            gameScreen.addComponent(backButton);
+            gameScreen.write("Lives: " + "♥".repeat(livesLeft), Positions.create(15, 42)).invoke();
+            gameScreen.write("Credits: " + totalPoints, Positions.create(60, 42)).invoke();
+            gameScreen.write("Level: " + currentLevel, Positions.create(73, 1)).invoke();
+            if (boosterStatus) gameScreen.write("Booster: OK", Positions.create(1, 42)).invoke();
+            if (nukeStatus) gameScreen.write("Nuke: OK", Positions.create(1, 41)).invoke();
+            if (slowStatus) gameScreen.write("Slow-Mo: OK", Positions.create(1, 43)).invoke();
+            gameScreen.display();
+            Runnable runnable = () -> {
+                try {
+                    launchGame(gameScreen);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            };
+            Thread t = new Thread(runnable);
+            t.start();
+            return UIEventResponses.preventDefault();
+        });
+    }
+
     public static void saveItems() throws Exception {
         Button choose1 = Components.button().withText("CHOOSE").withPosition(Positions.create(4, 7)).build();
         Button choose2 = Components.button().withText("CHOOSE").withPosition(Positions.create(4, 7)).build();
         Button choose3 = Components.button().withText("CHOOSE").withPosition(Positions.create(4, 7)).build();
         loadSaveState();
-        Panel savePanel1 = Components.panel()
-                .withPosition(Positions.create(15, 16))
-                .withSize(18, 11)
-                .withTitle("Save 1")
-                .wrapWithBox(true)
-                .build();
-        TextBox saveBox1 = Components.textBox()
-                .withPosition(Positions.create(0, 1))
-                .withContentWidth(16)
-                .addParagraph("Level: " + save1.get(0))
-                .addParagraph("Credits: " + save1.get(1))
-                .addParagraph("Lives: " + save1.get(2))
-                .build();
-
-        Panel savePanel2 = Components.panel()
-                .withPosition(Positions.create(33, 16))
-                .withSize(18, 11)
-                .withTitle("Save 2")
-                .wrapWithBox(true)
-                .build();
-        TextBox saveBox2 = Components.textBox()
-                .withPosition(Positions.create(0, 1))
-                .withContentWidth(16)
-                .addParagraph("Level: " + save2.get(0))
-                .addParagraph("Credits: " + save2.get(1))
-                .addParagraph("Lives: " + save2.get(2))
-                .build();
-
-        Panel savePanel3 = Components.panel()
-                .withPosition(Positions.create(51, 16))
-                .withSize(18, 11)
-                .withTitle("Save 3")
-                .wrapWithBox(true)
-                .build();
-        TextBox saveBox3 = Components.textBox()
-                .withPosition(Positions.create(0, 1))
-                .withContentWidth(16)
-                .addParagraph("Level: " + save3.get(0))
-                .addParagraph("Credits: " + save3.get(1))
-                .addParagraph("Lives: " + save3.get(2))
-                .build();
-        choose1.onComponentEvent(ComponentEventType.ACTIVATED, (event) -> {
-            try {
-                loadSave1();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            gameRunning = true;
-            stopLaunchGame = false;
-            gameScreen.addComponent(backButton);
-            gameScreen.write("Lives: " + "♥".repeat(livesLeft), Positions.create(15, 42)).invoke();
-            gameScreen.write("Credits: " + totalPoints, Positions.create(60, 42)).invoke();
-            gameScreen.write("Level: " + currentLevel, Positions.create(73, 1)).invoke();
-            if (boosterStatus) gameScreen.write("Booster: OK", Positions.create(1, 42)).invoke();
-            if (nukeStatus) gameScreen.write("Nuke: OK", Positions.create(1, 41)).invoke();
-            if (slowStatus) gameScreen.write("Slow-Mo: OK", Positions.create(1, 43)).invoke();
-            gameScreen.display();
-            Runnable runnable = () -> {
-                try {
-                    launchGame(gameScreen);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            };
-            Thread t = new Thread(runnable);
-            t.start();
-            return UIEventResponses.preventDefault();
-        });
-        choose2.onComponentEvent(ComponentEventType.ACTIVATED, (event) -> {
-            try {
-                loadSave2();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            gameRunning = true;
-            stopLaunchGame = false;
-            gameScreen.addComponent(backButton);
-            gameScreen.write("Lives: " + "♥".repeat(livesLeft), Positions.create(15, 42)).invoke();
-            gameScreen.write("Credits: " + totalPoints, Positions.create(60, 42)).invoke();
-            gameScreen.write("Level: " + currentLevel, Positions.create(73, 1)).invoke();
-            if (boosterStatus) gameScreen.write("Booster: OK", Positions.create(1, 42)).invoke();
-            if (nukeStatus) gameScreen.write("Nuke: OK", Positions.create(1, 41)).invoke();
-            if (slowStatus) gameScreen.write("Slow-Mo: OK", Positions.create(1, 43)).invoke();
-            gameScreen.display();
-            Runnable runnable = () -> {
-                try {
-                    launchGame(gameScreen);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            };
-            Thread t = new Thread(runnable);
-            t.start();
-            return UIEventResponses.preventDefault();
-        });
-        choose3.onComponentEvent(ComponentEventType.ACTIVATED, (event) -> {
-            try {
-                loadSave3();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            gameRunning = true;
-            stopLaunchGame = false;
-            gameScreen.addComponent(backButton);
-            gameScreen.write("Lives: " + "♥".repeat(livesLeft), Positions.create(15, 42)).invoke();
-            gameScreen.write("Credits: " + totalPoints, Positions.create(60, 42)).invoke();
-            gameScreen.write("Level: " + currentLevel, Positions.create(73, 1)).invoke();
-            if (boosterStatus) gameScreen.write("Booster: OK", Positions.create(1, 42)).invoke();
-            if (nukeStatus) gameScreen.write("Nuke: OK", Positions.create(1, 41)).invoke();
-            if (slowStatus) gameScreen.write("Slow-Mo: OK", Positions.create(1, 43)).invoke();
-            gameScreen.display();
-            Runnable runnable = () -> {
-                try {
-                    launchGame(gameScreen);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            };
-            Thread t = new Thread(runnable);
-            t.start();
-            return UIEventResponses.preventDefault();
-        });
+        Panel savePanel1 = buildSavePanels(15, 16, "Save 1");
+        TextBox saveBox1 = buildSaveTextBoxes(save1);
+        Panel savePanel2 = buildSavePanels(33, 16, "Save 2");
+        TextBox saveBox2 = buildSaveTextBoxes(save2);
+        Panel savePanel3 = buildSavePanels(51, 16, "Save 3");
+        TextBox saveBox3 = buildSaveTextBoxes(save3);
+        activateChooseSaveButton(choose1, save1);
+        activateChooseSaveButton(choose2, save2);
+        activateChooseSaveButton(choose3, save3);
         Button backToCampaignMenu = Components.button().withText("BACK").withPosition(Positions.offset1x1()).build();
         backToCampaignMenu.onComponentEvent(ComponentEventType.ACTIVATED, (event) -> {
             campaignLevelScreen.display();
@@ -723,101 +549,94 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
         chooseSave.addComponent(backToCampaignMenu);
     }
 
-
-    public static void shopItems() {
-        Panel boosterPanel = Components.panel()
-                .withPosition(Positions.create(29, 5))
+    public static Panel buildShopPanels(int x, int y, String title) {
+        return Components.panel()
+                .withPosition(Positions.create(x, y))
                 .withSize(27, 8)
-                .withTitle("Booster")
+                .withTitle(title)
                 .wrapWithBox(true)
                 .build();
+    }
 
-        Button buyBooster = Components.button().withText("BUY").withPosition(Positions.create(10, 5)).build();
-
-        TextBox boosterBox = Components.textBox()
+    public static TextBox buildShopTextBoxes(String p1, int cost) {
+        return Components.textBox()
                 .withPosition(Positions.create(0, 1))
                 .withContentWidth(25)
                 .addParagraph("Boosts credit gain by 2x")
-                .addParagraph("Cost: 1000")
+                .addParagraph("Cost: " + cost)
                 .build();
+    }
 
-        Panel nukePanel = Components.panel()
-                .withPosition(Positions.create(29, 13))
-                .withSize(27, 8)
-                .withTitle("Nuke")
-                .wrapWithBox(true)
-                .build();
+    public static void activateArcadeButtons(Button button, int[] arcadeStats, String difficulty) {
+        button.onComponentEvent(ComponentEventType.ACTIVATED, (event) -> {
+            gameRunning = true;
+            stopLaunchGame = false;
+            stats = arcadeStats;
+            gameScreen.addComponent(backButton);
+            gameScreen.write("Lives: " + "♥".repeat(livesLeft), Positions.create(15, 42)).invoke();
+            gameScreen.write("Points: " + points, Positions.create(60, 42)).invoke();
+            gameScreen.write("Level: " + difficulty, Positions.create(70, 1)).invoke();
+            gameScreen.display();
+            Runnable runnable = () -> {
+                try {
+                    launchGame(gameScreen);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            };
+            Thread t = new Thread(runnable);
+            t.start();
+            return UIEventResponses.preventDefault();
+        });
+    }
+
+    public static void activateShopButtons(Button buyItem, String item, boolean itemStatus) {
+        buyItem.onComponentEvent(ComponentEventType.ACTIVATED, (event) -> {
+            if (itemStatus) shopScreen.write(item + " already in inventory", Positions.create(30, 40)).invoke();
+            else if (totalPoints >= 1000) {
+                switch (item) {
+                    case "Booster":
+                        boosterStatus = true;
+                        totalPoints -= 1000;
+                        break;
+                    case "Nuke":
+                        nukeStatus = true;
+                        totalPoints -= 2500;
+                        break;
+                    case "Slow-mo":
+                        slowStatus = true;
+                        totalPoints -= 1000;
+                        break;
+                }
+                shopScreen.write(item + " bought. Type \"launch" +
+                        item.toLowerCase().replace("-", "") +
+                        "\" in-game to activate.", Positions.create(10, 40)).invoke();
+                shopScreen.write("Credits: " + totalPoints + " ".repeat(10), Positions.create(30, 3)).invoke();
+
+            } else shopScreen.write("Not enough dollar" + " ".repeat(20), Positions.create(30, 40)).invoke();
+            return UIEventResponses.preventDefault();
+        });
+    }
+
+    public static void shopItems() {
+        Panel boosterPanel = buildShopPanels(29, 5, "Booster");
+        TextBox boosterBox = buildShopTextBoxes("Boosts credit gain by 2x", 1000);
+        Panel nukePanel = buildShopPanels(29, 13, "Nuke");
+        TextBox nukeBox = buildShopTextBoxes("Everything die", 2500);
+        Panel slowPanel = buildShopPanels(29, 21, "Slow-mo");
+        TextBox slowBox = buildShopTextBoxes("Slows down words by 2x", 1000);
+        Panel livesPanel = buildShopPanels(29, 29, "Lives");
+        TextBox livesBox = buildShopTextBoxes("Gain 1 extra life", 5000);
+
+        Button buyBooster = Components.button().withText("BUY").withPosition(Positions.create(10, 5)).build();
         Button buyNuke = Components.button().withText("BUY").withPosition(Positions.create(10, 5)).build();
-
-        TextBox nukeBox = Components.textBox()
-                .withPosition(Positions.create(0, 1))
-                .withContentWidth(24)
-                .addParagraph("Everything die")
-                .addParagraph("Cost: 2500")
-                .build();
-
-        Panel slowPanel = Components.panel()
-                .withPosition(Positions.create(29, 21))
-                .withSize(27, 8)
-                .withTitle("Slow-mo")
-                .wrapWithBox(true)
-                .build();
         Button buySlow = Components.button().withText("BUY").withPosition(Positions.create(10, 5)).build();
-
-        TextBox slowBox = Components.textBox()
-                .withPosition(Positions.create(0, 1))
-                .withContentWidth(24)
-                .addParagraph("Slows down words by 2x")
-                .addParagraph("Cost: 1000")
-                .build();
-
-        Panel livesPanel = Components.panel()
-                .withPosition(Positions.create(29, 29))
-                .withSize(27, 8)
-                .withTitle("Lives")
-                .wrapWithBox(true)
-                .build();
         Button buyLives = Components.button().withText("BUY").withPosition(Positions.create(10, 5)).build();
 
-        TextBox livesBox = Components.textBox()
-                .withPosition(Positions.create(0, 1))
-                .withContentWidth(24)
-                .addParagraph("Gain 1 extra life")
-                .addParagraph("Cost: 5000")
-                .build();
+        activateShopButtons(buyBooster, "Booster", boosterStatus);
+        activateShopButtons(buyNuke, "Nuke", nukeStatus);
+        activateShopButtons(buySlow, "Slow-mo", slowStatus);
 
-        buyBooster.onComponentEvent(ComponentEventType.ACTIVATED, (event) -> {
-            if (boosterStatus) shopScreen.write("Booster already in inventory", Positions.create(30, 40)).invoke();
-            else if (totalPoints >= 1000) {
-                boosterStatus = true;
-                totalPoints -= 1000;
-                shopScreen.write("Credits: " + totalPoints + " ".repeat(10), Positions.create(30, 3)).invoke();
-                shopScreen.write("Booster bought. Type \"launchbooster\" in-game to activate.", Positions.create(10, 40)).invoke();
-
-            } else shopScreen.write("Not enough dollar" + " ".repeat(20), Positions.create(30, 40)).invoke();
-            return UIEventResponses.preventDefault();
-        });
-        buyNuke.onComponentEvent(ComponentEventType.ACTIVATED, (event) -> {
-            if (nukeStatus) shopScreen.write("Nuke already in inventory", Positions.create(30, 40)).invoke();
-            else if (totalPoints >= 2500) {
-                nukeStatus = true;
-                totalPoints -= 2500;
-                shopScreen.write("Credits: " + totalPoints + " ".repeat(10), Positions.create(30, 3)).invoke();
-                shopScreen.write("Nuke bought. Type \"launchnuke\" in-game to activate.", Positions.create(10, 40)).invoke();
-
-            } else shopScreen.write("Not enough dollar" + " ".repeat(20), Positions.create(30, 40)).invoke();
-            return UIEventResponses.preventDefault();
-        });
-        buySlow.onComponentEvent(ComponentEventType.ACTIVATED, (event) -> {
-            if (slowStatus) shopScreen.write("Slow-mo already in inventory", Positions.create(30, 40)).invoke();
-            else if (totalPoints >= 1000) {
-                slowStatus = true;
-                totalPoints -= 1000;
-                shopScreen.write("Credits: " + totalPoints + " ".repeat(10), Positions.create(30, 3)).invoke();
-                shopScreen.write("Slow-mo bought. Type \"launchslowmo\" in-game to activate.", Positions.create(10, 40)).invoke();
-            } else shopScreen.write("Not enough dollar" + " ".repeat(20), Positions.create(30, 40)).invoke();
-            return UIEventResponses.preventDefault();
-        });
         buyLives.onComponentEvent(ComponentEventType.ACTIVATED, (event) -> {
             if (totalPoints >= 5000) {
                 totalPoints -= 5000;
@@ -929,7 +748,6 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
             return UIEventResponses.preventDefault();
         });
 
-
         newGameButton.onComponentEvent(ComponentEventType.ACTIVATED, (event) -> {
             gameRunning = true;
             stopLaunchGame = false;
@@ -994,107 +812,11 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
             menuScreen.display();
             return UIEventResponses.preventDefault();
         });
-
-        easyButton.onComponentEvent(ComponentEventType.ACTIVATED, (event) -> {
-            gameRunning = true;
-            stopLaunchGame = false;
-            stats = easyStats;
-            gameScreen.addComponent(backButton);
-            gameScreen.write("Lives: " + "♥".repeat(livesLeft), Positions.create(15, 42)).invoke();
-            gameScreen.write("Points: " + points, Positions.create(60, 42)).invoke();
-            gameScreen.write("Level: Easy", Positions.create(73, 1)).invoke();
-            gameScreen.display();
-            Runnable runnable = () -> {
-                try {
-                    launchGame(gameScreen);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            };
-            Thread t = new Thread(runnable);
-            t.start();
-            return UIEventResponses.preventDefault();
-        });
-        medButton.onComponentEvent(ComponentEventType.ACTIVATED, (event) -> {
-            gameRunning = true;
-            stopLaunchGame = false;
-            stats = medStats;
-            gameScreen.addComponent(backButton);
-            gameScreen.write("Lives: " + "♥".repeat(livesLeft), Positions.create(15, 42)).invoke();
-            gameScreen.write("Points: " + points, Positions.create(60, 42)).invoke();
-            gameScreen.write("Level: Medium", Positions.create(70, 1)).invoke();
-            gameScreen.display();
-            Runnable runnable = () -> {
-                try {
-                    launchGame(gameScreen);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            };
-            Thread t = new Thread(runnable);
-            t.start();
-            return UIEventResponses.preventDefault();
-        });
-        hardButton.onComponentEvent(ComponentEventType.ACTIVATED, (event) -> {
-            gameRunning = true;
-            stopLaunchGame = false;
-            stats = hardStats;
-            gameScreen.addComponent(backButton);
-            gameScreen.write("Lives: " + "♥".repeat(livesLeft), Positions.create(15, 42)).invoke();
-            gameScreen.write("Points: " + points, Positions.create(60, 42)).invoke();
-            gameScreen.write("Level: Hard", Positions.create(73, 1)).invoke();
-            gameScreen.display();
-            Runnable runnable = () -> {
-                try {
-                    launchGame(gameScreen);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            };
-            Thread t = new Thread(runnable);
-            t.start();
-            return UIEventResponses.preventDefault();
-        });
-        extremeButton.onComponentEvent(ComponentEventType.ACTIVATED, (event) -> {
-            gameRunning = true;
-            stopLaunchGame = false;
-            stats = extremeStats;
-            gameScreen.addComponent(backButton);
-            gameScreen.write("Lives: " + "♥".repeat(livesLeft), Positions.create(15, 42)).invoke();
-            gameScreen.write("Points: " + points, Positions.create(60, 42)).invoke();
-            gameScreen.write("Level: Extreme", Positions.create(70, 1)).invoke();
-            gameScreen.display();
-            Runnable runnable = () -> {
-                try {
-                    launchGame(gameScreen);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            };
-            Thread t = new Thread(runnable);
-            t.start();
-            return UIEventResponses.preventDefault();
-        });
-        insaneButton.onComponentEvent(ComponentEventType.ACTIVATED, (event) -> {
-            gameRunning = true;
-            stopLaunchGame = false;
-            stats = insaneStats;
-            gameScreen.addComponent(backButton);
-            gameScreen.write("Lives: " + "♥".repeat(livesLeft), Positions.create(15, 42)).invoke();
-            gameScreen.write("Points: " + points, Positions.create(60, 42)).invoke();
-            gameScreen.write("Level: Insane", Positions.create(70, 1)).invoke();
-            gameScreen.display();
-            Runnable runnable = () -> {
-                try {
-                    launchGame(gameScreen);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            };
-            Thread t = new Thread(runnable);
-            t.start();
-            return UIEventResponses.preventDefault();
-        });
+        activateArcadeButtons(easyButton, easyStats, "Easy");
+        activateArcadeButtons(medButton, medStats, "Medium");
+        activateArcadeButtons(hardButton, hardStats, "Hard");
+        activateArcadeButtons(extremeButton, extremeStats, "Extreme");
+        activateArcadeButtons(insaneButton, insaneStats, "Insane");
 
         backButton.onComponentEvent(ComponentEventType.ACTIVATED, (event) -> { // BACK nuppu vajutades kustutab teksti layerid ja taastab elud ning algse punktiseisu.
             for (Layer b : tekstid) {
@@ -1139,10 +861,7 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
             menuScreen.display();
             return UIEventResponses.preventDefault();
         });
-        backToMenuButton3.onComponentEvent(ComponentEventType.ACTIVATED, (event) -> {
-            menuScreen.display();
-            return UIEventResponses.preventDefault();
-        });
+
         backToLevelCompleteScreen.onComponentEvent(ComponentEventType.ACTIVATED, (event) -> {
             levelCompleteScreen.display();
             return UIEventResponses.preventDefault();
