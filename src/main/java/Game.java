@@ -19,6 +19,7 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
                     .withDebugMode(false)
                     .build());
     private static String rolledWord;
+    //private static String rolledParagraph;
     private static int loc;
     private static Layer wordLayer;
     private static HashMap<String, Layer> wordsOnScreen = new HashMap<>();
@@ -78,7 +79,8 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
     private static final int[] level7Stats = {1000, 1000, 35};
     private static final int[] level8Stats = {1000, 1000, 40};
     private static final int[] level9Stats = {750, 750, 55};
-    private static final int[][] campaignStats = {level1Stats, level2Stats, level3Stats, level4Stats, level5Stats, level6Stats, level7Stats, level8Stats, level9Stats};
+    private static final int[] level10Stats = {2500, 2500, 10};
+    private static final int[][] campaignStats = {level1Stats, level2Stats, level3Stats, level4Stats, level5Stats, level6Stats, level7Stats, level8Stats, level9Stats, level10Stats};
 
     private static List<Layer> tekstid = new ArrayList<>(); //
     private static boolean stopLaunchGame = false;
@@ -155,17 +157,25 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
         return nukeStatus;
     }
 
-    public static boolean isSlowStatus() { return slowStatus; }
+    public static boolean isSlowStatus() {
+        return slowStatus;
+    }
 
     public static boolean isBoosterStatus() {
         return boosterStatus;
     }
 
-    public static void setBoosterStatus(boolean boosterStatus) { Game.boosterStatus = boosterStatus; }
+    public static void setBoosterStatus(boolean boosterStatus) {
+        Game.boosterStatus = boosterStatus;
+    }
 
-    public static void setNukeStatus(boolean nukeStatus) { Game.nukeStatus = nukeStatus; }
+    public static void setNukeStatus(boolean nukeStatus) {
+        Game.nukeStatus = nukeStatus;
+    }
 
-    public static void setSlowStatus(boolean slowStatus) { Game.slowStatus = slowStatus; }
+    public static void setSlowStatus(boolean slowStatus) {
+        Game.slowStatus = slowStatus;
+    }
 
     public static HashMap<String, Layer> getWordsOnScreen() {
         return wordsOnScreen;
@@ -512,9 +522,18 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
             //System.out.println(getWordsOnScreen().toString());
             rolledWord = spawner.rollNext();
             loc = spawner.getLoc();
+            /*
+            rolledParagraph = spawner.rollNextPara(i);
+            if (currentLevel == 10) {
+                drawer.drawParagraph(rolledParagraph);
+                wordLayer = drawer.getParaLayer();
+                wordsOnScreen.put(rolledWord, wordLayer);
+            }
+            */
             drawer.drawWords(rolledWord);
             wordLayer = drawer.getWordLayer();
             wordsOnScreen.put(rolledWord, wordLayer);
+
             tekstid.add(wordLayer);
             ThreadWords threadWords = new ThreadWords(wordLayer);
             Thread t_threadWords = new Thread(threadWords);
@@ -892,19 +911,19 @@ public class Game { // Selles klassis luuakse mängu graafiline liides, luuakse 
         });
 
         saveSlot1.onComponentEvent(ComponentEventType.ACTIVATED, (event) -> {
-            levelCompleteScreen.write("Saved in slot 1",Positions.create(33,12)).invoke();
+            levelCompleteScreen.write("Saved in slot 1", Positions.create(33, 12)).invoke();
             saveClicked = 1;
             writeSaveState();
             return UIEventResponses.preventDefault();
         });
         saveSlot2.onComponentEvent(ComponentEventType.ACTIVATED, (event) -> {
-            levelCompleteScreen.write("Saved in slot 2",Positions.create(33,12)).invoke();
+            levelCompleteScreen.write("Saved in slot 2", Positions.create(33, 12)).invoke();
             saveClicked = 2;
             writeSaveState();
             return UIEventResponses.preventDefault();
         });
         saveSlot3.onComponentEvent(ComponentEventType.ACTIVATED, (event) -> {
-            levelCompleteScreen.write("Saved in slot 3",Positions.create(33,12)).invoke();
+            levelCompleteScreen.write("Saved in slot 3", Positions.create(33, 12)).invoke();
             saveClicked = 3;
             writeSaveState();
             return UIEventResponses.preventDefault();

@@ -17,8 +17,10 @@ public class WordSpawner { // See klass tegeleb failist sõnade lugemisega ja ne
     }
 
     private static ArrayList<String> words;
+    //private static ArrayList<String> paragraphs;
     private Random wordRoller = new Random();
     private int rollWord = wordRoller.nextInt(9895);
+    //private int rollPara = wordRoller.nextInt(770);
     private Random rand = new Random();
 
     static {
@@ -37,4 +39,30 @@ public class WordSpawner { // See klass tegeleb failist sõnade lugemisega ja ne
         rollWord = wordRoller.nextInt(9895);
         return words.get(rollWord).toLowerCase();
     }
+
+    //Paragraphs - unfinished
+    /*
+    public String rollNextPara(int i) {
+        rollPara = wordRoller.nextInt(770);
+        return paragraphs.get(rollPara).toLowerCase().trim().split(" ")[i];
+    }
+    public static ArrayList<String> readParagraphs(String filename) throws Exception {
+        ArrayList<String> paragraphs = new ArrayList<>();
+        File file = new File(filename);
+        try (Scanner sc = new Scanner(file, "UTF-8")) {
+            while (sc.hasNextLine()) {
+                String rida = sc.nextLine();
+                paragraphs.add(rida.split("\\t")[1]);
+            }
+        }
+        return paragraphs;
+    }
+    static {
+        try {
+            paragraphs = readParagraphs("paragraphs.txt");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    */
 }
