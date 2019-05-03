@@ -46,6 +46,13 @@ public class Scores extends GameVars {
                 .build();
     }
 
+    public static Panel addContentToPanels(int x, int y, String title, List<Integer> tops) {
+        Panel panel = buildScorePanels(x, y, title);
+        TextBox box = buildScoreTextBoxes(tops);
+        panel.addComponent(box);
+        return panel;
+    }
+
     public Screen getScoreScreen() {
         return scoreScreen;
     }
@@ -57,22 +64,11 @@ public class Scores extends GameVars {
             return UIEventResponses.preventDefault();
         });
         scoresFromFile();
-        Panel easyPanel = buildScorePanels(19, 8, "Easy");
-        TextBox easyBox = buildScoreTextBoxes(easyTops);
-        Panel mediumPanel = buildScorePanels(36, 8, "Medium");
-        TextBox mediumBox = buildScoreTextBoxes(mediumTops);
-        Panel hardPanel = buildScorePanels(53, 8, "Hard");
-        TextBox hardBox = buildScoreTextBoxes(hardTops);
-        Panel insanePanel = buildScorePanels(28, 24, "Insane");
-        TextBox insaneBox = buildScoreTextBoxes(insaneTops);
-        Panel extremePanel = buildScorePanels(45, 24, "Extreme");
-        TextBox extremeBox = buildScoreTextBoxes(extremeTops);
-
-        easyPanel.addComponent(easyBox);
-        mediumPanel.addComponent(mediumBox);
-        hardPanel.addComponent(hardBox);
-        insanePanel.addComponent(insaneBox);
-        extremePanel.addComponent(extremeBox);
+        Panel easyPanel = addContentToPanels(19, 8, "Easy", easyTops);
+        Panel mediumPanel = addContentToPanels(36, 8, "Medium", mediumTops);
+        Panel hardPanel = addContentToPanels(53, 8, "Hard", hardTops);
+        Panel insanePanel = addContentToPanels(28, 24, "Insane", insaneTops);
+        Panel extremePanel = addContentToPanels(45, 24, "Extreme", extremeTops);
 
         scoreScreen.addComponent(easyPanel);
         scoreScreen.addComponent(mediumPanel);
