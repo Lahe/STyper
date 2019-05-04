@@ -1,4 +1,5 @@
 import org.hexworks.zircon.api.*;
+import org.hexworks.zircon.api.graphics.Layer;
 import org.hexworks.zircon.api.grid.TileGrid;
 import org.hexworks.zircon.api.resource.BuiltInCP437TilesetResource;
 import org.hexworks.zircon.api.screen.Screen;
@@ -8,7 +9,7 @@ import java.nio.charset.Charset;
 import java.sql.Timestamp;
 import java.util.*;
 
-public class Game extends GameVars{ // Selles klassis luuakse mängu graafiline liides, luuakse get- ja set-meetodid ning käivitatakse mäng.
+public class Game extends GameVars { // Selles klassis luuakse mängu graafiline liides, luuakse get- ja set-meetodid ning käivitatakse mäng.
     private static final TileGrid tileGrid = SwingApplications.startTileGrid(AppConfigs.newConfig()
             .withDefaultTileset(BuiltInCP437TilesetResource.MS_GOTHIC_16X16)
             .withSize(TypingSupport.getSIZE())
@@ -26,7 +27,6 @@ public class Game extends GameVars{ // Selles klassis luuakse mängu graafiline 
 
     private static Screen mutableMenu = menu.getMenuScreen();
     private static Screen mutableShop = shop.getShopScreen();
-    private static Screen mutableScores = scores.getScoreScreen();
     private static Screen mutableArcadeLevels = arcadeLevels.getLevelScreen();
     private static Screen mutableCampaignLevels = campaignLevels.getCampaignLevelScreen();
     private static Screen mutableGameFinishedScreen = gameFinishedScreen.getGameFinishedScreen();
@@ -56,7 +56,7 @@ public class Game extends GameVars{ // Selles klassis luuakse mängu graafiline 
         try {
             String filename = "Leaderboards.txt";
             FileWriter fw = new FileWriter(filename, Charset.forName("UTF-8"), true);
-            fw.write(timestamp + " " + winOrLose + " " + difficultyLevel + " " + totalPoints + "\n");
+            fw.write(timestamp + " " + winOrLose + " " + difficultyLevel + " " + points + "\n");
             fw.close();
         } catch (IOException ex) {
             System.out.println("Oih");
@@ -69,10 +69,9 @@ public class Game extends GameVars{ // Selles klassis luuakse mängu graafiline 
         tileGrid.clear();
         livesLeft = 3;
         points = 0;
-        TypingSupport.setPoints(0);
-        ThreadWords.setLivesLeft(3);
         wordsOnScreen = new HashMap<>();
         gameRunning = false;
+        mutableGameScreen.write("Points:         ",Positions.create(60, 42)).invoke();
     }
 
     public static void checkIfGameOver() {
@@ -81,12 +80,12 @@ public class Game extends GameVars{ // Selles klassis luuakse mängu graafiline 
                 mutableGameOverScreen.write("Points: " + points, Positions.create(38, 21)).invoke();
                 winOrLose = "LOST";
                 writeResultToFile();
-                clearLastGame();
-                mutableGameOverScreen.display();
-            } else {
-                clearLastGame();
-                mutableGameOverScreen.display();
             }
+            for (Layer b : tekstid) {
+                tileGrid.removeLayer(b);
+            }
+            clearLastGame();
+            mutableGameOverScreen.display();
         }
     }
 
@@ -138,15 +137,14 @@ public class Game extends GameVars{ // Selles klassis luuakse mängu graafiline 
                 }
 
             } else if (wordsOnScreen.isEmpty()) {
+                gameRunning = false;
                 if (gameStyle.equals("ARCADE")) {
-                    gameRunning = false;
                     mutableGameFinishedScreen.write("Points: " + points, Positions.create(38, 21)).invoke();
                     winOrLose = "WIN";
                     writeResultToFile();
                     clearLastGame();
                     mutableGameFinishedScreen.display();
                 } else {
-                    gameRunning = false;
                     clearLastGame();
                     mutableLevelCompleteScreen.display();
                 }
@@ -159,6 +157,7 @@ public class Game extends GameVars{ // Selles klassis luuakse mängu graafiline 
     public static void main(String[] args) throws Exception {
         try {
             File f = new File("Saves.txt");
+            File f2 = new File("Leaderboards.txt");
             if (!f.exists() || f.length() == 0) {
                 Timestamp timestamp = new java.sql.Timestamp(System.currentTimeMillis());
                 FileWriter fw = new FileWriter("Saves.txt");
@@ -167,13 +166,15 @@ public class Game extends GameVars{ // Selles klassis luuakse mängu graafiline 
                 fw.write("3,1,0,3,false,false,false," + timestamp + "\n");
                 fw.close();
             }
+            if (!f2.exists()) {
+                f2.createNewFile();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        menu.build(mutableCampaignLevels, mutableArcadeLevels, mutableScores);
-        shop.build(mutableShop,mutableLevelCompleteScreen);
-        scores.build(mutableMenu);
+        menu.build(mutableCampaignLevels, mutableArcadeLevels, scores);
+        shop.build(mutableShop, mutableLevelCompleteScreen);
         arcadeLevels.build(mutableGameScreen, mutableMenu);
         campaignLevels.build(mutableGameScreen, mutableMenu);
         gameFinishedScreen.build(mutableGameScreen, mutableMenu);
