@@ -1,7 +1,4 @@
-import org.hexworks.zircon.api.Components;
-import org.hexworks.zircon.api.Positions;
-import org.hexworks.zircon.api.Screens;
-import org.hexworks.zircon.api.UIEventResponses;
+import org.hexworks.zircon.api.*;
 import org.hexworks.zircon.api.component.Button;
 import org.hexworks.zircon.api.grid.TileGrid;
 import org.hexworks.zircon.api.screen.Screen;
@@ -15,10 +12,12 @@ public class Menu extends GameVars{
         this.tileGrid = tileGrid;
         this.menuScreen = Screens.createScreenFor(tileGrid);
     }
-    public void build(Screen campaignLevelScreen, Screen levelScreen, Screen scoreScreen){
-        final Button campaignButton = Components.button().withText("CAMPAIGN").withPosition(Positions.create(38, 17)).build();
-        final Button scoreButton = Components.button().withText("SCORES").withPosition(Positions.create(38, 23)).build();
-        final Button arcadeButton = Components.button().withText("ARCADE MODE").withPosition(Positions.create(38, 20)).build();
+    public void build(Screen campaignLevelScreen, Screen levelScreen,Scores scoreScreen){
+        menuScreen.write("Welcome to:",Positions.create(36,9)).invoke();
+        menuScreen.write("S-Typer",Positions.create(38,11)).invoke();
+        final Button campaignButton = Components.button().withText("CAMPAIGN").withPosition(Positions.create(37, 17)).build();
+        final Button scoreButton = Components.button().withText("SCORES").withPosition(Positions.create(37, 23)).build();
+        final Button arcadeButton = Components.button().withText("ARCADE MODE").withPosition(Positions.create(37, 20)).build();
         menuScreen.addComponent(campaignButton);
         menuScreen.addComponent(arcadeButton);
         menuScreen.addComponent(scoreButton);
@@ -34,6 +33,7 @@ public class Menu extends GameVars{
             return UIEventResponses.preventDefault();
         });
         scoreButton.onComponentEvent(ComponentEventType.ACTIVATED, (event) -> {
+            scoreScreen.build(menuScreen);
             scoreScreen.display();
             return UIEventResponses.preventDefault();
         });

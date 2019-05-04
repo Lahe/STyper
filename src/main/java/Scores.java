@@ -53,22 +53,30 @@ public class Scores extends GameVars {
         return panel;
     }
 
-    public Screen getScoreScreen() {
-        return scoreScreen;
-    }
-
     public void build(Screen menuScreen) {
         final Button backToMenuButtonScores = Components.button().withText("BACK").withPosition(Positions.offset1x1()).build();
-        backToMenuButtonScores.onComponentEvent(ComponentEventType.ACTIVATED, (event) -> {
-            menuScreen.display();
-            return UIEventResponses.preventDefault();
-        });
         scoresFromFile();
         Panel easyPanel = addContentToPanels(19, 8, "Easy", easyTops);
         Panel mediumPanel = addContentToPanels(36, 8, "Medium", mediumTops);
         Panel hardPanel = addContentToPanels(53, 8, "Hard", hardTops);
         Panel insanePanel = addContentToPanels(28, 24, "Insane", insaneTops);
         Panel extremePanel = addContentToPanels(45, 24, "Extreme", extremeTops);
+
+        backToMenuButtonScores.onComponentEvent(ComponentEventType.ACTIVATED, (event) -> {
+            menuScreen.display();
+            scoreScreen.removeComponent(easyPanel);
+            scoreScreen.removeComponent(mediumPanel);
+            scoreScreen.removeComponent(hardPanel);
+            scoreScreen.removeComponent(insanePanel);
+            scoreScreen.removeComponent(extremePanel);
+            scoreScreen.removeComponent(backToMenuButtonScores);
+            easyTops.clear();
+            mediumTops.clear();
+            hardTops.clear();
+            insaneTops.clear();
+            extremeTops.clear();
+            return UIEventResponses.preventDefault();
+        });
 
         scoreScreen.addComponent(easyPanel);
         scoreScreen.addComponent(mediumPanel);

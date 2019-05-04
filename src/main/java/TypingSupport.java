@@ -23,10 +23,6 @@ public class TypingSupport extends GameVars { // See klass tegeleb kasutaja pool
         TypingSupport.startOrStopSupport = startOrStopSupport;
     }
 
-    public static void setPoints(int points) {
-        GameVars.points = points;
-    }
-
     public static Size getSIZE() {
         return SIZE;
     }

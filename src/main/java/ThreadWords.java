@@ -8,10 +8,6 @@ public class ThreadWords extends GameVars implements Runnable { // Selles klassi
         return livesLeft;
     }
 
-    public static void setLivesLeft(int livesLeft) {
-        GameVars.livesLeft = livesLeft;
-    }
-
     ThreadWords(Layer wordLayer) {
         this.wordLayer = wordLayer;
     }
