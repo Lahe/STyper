@@ -13,7 +13,6 @@ public class Menu extends GameVars{
         this.menuScreen = Screens.createScreenFor(tileGrid);
     }
     public void build(Screen campaignLevelScreen, Screen levelScreen,Scores scoreScreen){
-        menuScreen.write("Welcome to:",Positions.create(36,9)).invoke();
         menuScreen.write("S-Typer",Positions.create(38,11)).invoke();
         final Button campaignButton = Components.button().withText("CAMPAIGN").withPosition(Positions.create(37, 17)).build();
         final Button scoreButton = Components.button().withText("SCORES").withPosition(Positions.create(37, 23)).build();

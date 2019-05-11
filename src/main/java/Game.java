@@ -144,7 +144,12 @@ public class Game extends GameVars { // Selles klassis luuakse mängu graafiline
                     writeResultToFile();
                     clearLastGame();
                     mutableGameFinishedScreen.display();
-                } else {
+                }
+                else if (gameStyle.equals("CAMPAIGN") && currentLevel == 9){
+                    clearLastGame();
+                    mutableGameFinishedScreen.display();
+                }
+                else {
                     clearLastGame();
                     mutableLevelCompleteScreen.display();
                 }
