@@ -14,7 +14,7 @@ public class GameVars {
     static int totalPoints;
     static int saveClicked;
     static int[] stats = new int[3];
-    static final int[] easyStats =  {2000, 2000, 15};
+    static final int[] easyStats = {2000, 2000, 15};
     static final int[] medStats = {1300, 1300, 30};
     static final int[] hardStats = {1000, 1000, 60};
     static final int[] extremeStats = {750, 750, 60};

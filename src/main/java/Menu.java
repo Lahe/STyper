@@ -1,10 +1,13 @@
-import org.hexworks.zircon.api.*;
+import org.hexworks.zircon.api.Components;
+import org.hexworks.zircon.api.Positions;
+import org.hexworks.zircon.api.Screens;
+import org.hexworks.zircon.api.UIEventResponses;
 import org.hexworks.zircon.api.component.Button;
 import org.hexworks.zircon.api.grid.TileGrid;
 import org.hexworks.zircon.api.screen.Screen;
 import org.hexworks.zircon.api.uievent.ComponentEventType;
 
-public class Menu extends GameVars{
+public class Menu extends GameVars {
     private final Screen menuScreen;
     private final TileGrid tileGrid;
 
@@ -12,11 +15,12 @@ public class Menu extends GameVars{
         this.tileGrid = tileGrid;
         this.menuScreen = Screens.createScreenFor(tileGrid);
     }
-    public void build(Screen campaignLevelScreen, Screen levelScreen,Scores scoreScreen){
-        menuScreen.write("S-Typer",Positions.create(38,11)).invoke();
+
+    public void build(Screen campaignLevelScreen, Screen levelScreen, Scores scoreScreen) {
+        menuScreen.write(" S-Typer", Positions.create(38, 12)).invoke();
         final Button campaignButton = Components.button().withText("CAMPAIGN").withPosition(Positions.create(37, 17)).build();
-        final Button scoreButton = Components.button().withText("SCORES").withPosition(Positions.create(37, 23)).build();
-        final Button arcadeButton = Components.button().withText("ARCADE MODE").withPosition(Positions.create(37, 20)).build();
+        final Button scoreButton = Components.button().withText("SCORES").withPosition(Positions.create(38, 23)).build();
+        final Button arcadeButton = Components.button().withText("ARCADE MODE").withPosition(Positions.create(36, 20)).build();
         menuScreen.addComponent(campaignButton);
         menuScreen.addComponent(arcadeButton);
         menuScreen.addComponent(scoreButton);

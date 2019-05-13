@@ -16,6 +16,7 @@ public class ArcadeLevels extends GameVars {
         this.tileGrid = tileGrid;
         this.levelScreen = Screens.createScreenFor(tileGrid);
     }
+
     public static void activateArcadeButtons(Button button, int[] arcadeStats, String difficulty, Screen gameScreen) {
         button.onComponentEvent(ComponentEventType.ACTIVATED, (event) -> {
             gameRunning = true;
@@ -38,7 +39,8 @@ public class ArcadeLevels extends GameVars {
             return UIEventResponses.preventDefault();
         });
     }
-    public void build(Screen gameScreen, Screen menuScreen){
+
+    public void build(Screen gameScreen, Screen menuScreen) {
         final Button easyButton = Components.button().withText("Easy").withPosition(Positions.create(38, 19)).build();
         final Button medButton = Components.button().withText("Medium").withPosition(Positions.create(38, 21)).build();
         final Button hardButton = Components.button().withText("Hard").withPosition(Positions.create(38, 23)).build();
@@ -69,11 +71,11 @@ public class ArcadeLevels extends GameVars {
         levelScreen.write("╬", Positions.create(50, 18)).invoke();
         levelScreen.write("╬", Positions.create(33, 28)).invoke();
         levelScreen.write("╬", Positions.create(50, 28)).invoke();
-        activateArcadeButtons(easyButton, easyStats, "Easy",gameScreen);
-        activateArcadeButtons(medButton, medStats, "Medium",gameScreen);
-        activateArcadeButtons(hardButton, hardStats, "Hard",gameScreen);
-        activateArcadeButtons(extremeButton, extremeStats, "Extreme",gameScreen);
-        activateArcadeButtons(insaneButton, insaneStats, "Insane",gameScreen);
+        activateArcadeButtons(easyButton, easyStats, "Easy", gameScreen);
+        activateArcadeButtons(medButton, medStats, "Medium", gameScreen);
+        activateArcadeButtons(hardButton, hardStats, "Hard", gameScreen);
+        activateArcadeButtons(extremeButton, extremeStats, "Extreme", gameScreen);
+        activateArcadeButtons(insaneButton, insaneStats, "Insane", gameScreen);
         backToMenuButton.onComponentEvent(ComponentEventType.ACTIVATED, (event) -> {
             menuScreen.display();
             return UIEventResponses.preventDefault();
@@ -84,7 +86,7 @@ public class ArcadeLevels extends GameVars {
         return levelScreen;
     }
 
-    public void display(){
+    public void display() {
         levelScreen.display();
     }
 }

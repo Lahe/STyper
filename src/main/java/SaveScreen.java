@@ -138,7 +138,7 @@ public class SaveScreen extends GameVars {
         return savePanel;
     }
 
-    public void clear(Panel p1, Panel p2, Panel p3, Button b){
+    public void clear(Panel p1, Panel p2, Panel p3, Button b) {
         chooseSave.removeComponent(p1);
         chooseSave.removeComponent(p2);
         chooseSave.removeComponent(p3);
@@ -157,7 +157,7 @@ public class SaveScreen extends GameVars {
         chooseSave.addComponent(backToCampaignMenu);
         backToCampaignMenu.onComponentEvent(ComponentEventType.ACTIVATED, (event) -> {
             campaignLevelScreen.display();
-            clear(savePanel1,savePanel2,savePanel3,backToCampaignMenu);
+            clear(savePanel1, savePanel2, savePanel3, backToCampaignMenu);
             return UIEventResponses.preventDefault();
         });
     }

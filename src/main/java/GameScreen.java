@@ -8,7 +8,7 @@ import org.hexworks.zircon.api.grid.TileGrid;
 import org.hexworks.zircon.api.screen.Screen;
 import org.hexworks.zircon.api.uievent.ComponentEventType;
 
-public class GameScreen extends GameVars{
+public class GameScreen extends GameVars {
     private final TileGrid tileGrid;
     private final Screen gameScreen;
     private static final Button backButton = Components.button().withText("BACK").withPosition(Positions.offset1x1()).build();

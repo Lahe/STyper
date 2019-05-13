@@ -1,4 +1,3 @@
-import com.sun.management.GarbageCollectionNotificationInfo;
 import org.hexworks.zircon.api.Positions;
 import org.hexworks.zircon.api.Sizes;
 import org.hexworks.zircon.api.UIEventResponses;
@@ -46,8 +45,7 @@ public class TypingSupport extends GameVars { // See klass tegeleb kasutaja pool
                         if (boosterActive) {
                             points += sb.length() * 10 * 2;
                             totalPoints += sb.length() * 10 * 2;
-                        }
-                        else {
+                        } else {
                             points += sb.length() * 10;
                             totalPoints += sb.length() * 10;
                         }
@@ -76,7 +74,7 @@ public class TypingSupport extends GameVars { // See klass tegeleb kasutaja pool
                                 tileGrid.removeLayer(wordsOnScreen.get(word));
                                 wordsToRemove.add(word);
                             }
-                            for (String s: wordsToRemove) {
+                            for (String s : wordsToRemove) {
                                 wordsOnScreen.remove(s);
                             }
                             totalPoints += nukePts;

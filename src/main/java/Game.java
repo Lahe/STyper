@@ -1,13 +1,17 @@
-import org.hexworks.zircon.api.*;
+import org.hexworks.zircon.api.AppConfigs;
+import org.hexworks.zircon.api.Positions;
+import org.hexworks.zircon.api.SwingApplications;
 import org.hexworks.zircon.api.graphics.Layer;
 import org.hexworks.zircon.api.grid.TileGrid;
 import org.hexworks.zircon.api.resource.BuiltInCP437TilesetResource;
 import org.hexworks.zircon.api.screen.Screen;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.charset.Charset;
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.HashMap;
 
 public class Game extends GameVars { // Selles klassis luuakse mängu graafiline liides, luuakse get- ja set-meetodid ning käivitatakse mäng.
     private static final TileGrid tileGrid = SwingApplications.startTileGrid(AppConfigs.newConfig()
@@ -71,7 +75,7 @@ public class Game extends GameVars { // Selles klassis luuakse mängu graafiline
         points = 0;
         wordsOnScreen = new HashMap<>();
         gameRunning = false;
-        mutableGameScreen.write("Points:         ",Positions.create(60, 42)).invoke();
+        mutableGameScreen.write("Points:         ", Positions.create(60, 42)).invoke();
     }
 
     public static void checkIfGameOver() {
@@ -144,12 +148,10 @@ public class Game extends GameVars { // Selles klassis luuakse mängu graafiline
                     writeResultToFile();
                     clearLastGame();
                     mutableGameFinishedScreen.display();
-                }
-                else if (gameStyle.equals("CAMPAIGN") && currentLevel == 9){
+                } else if (gameStyle.equals("CAMPAIGN") && currentLevel == 9) {
                     clearLastGame();
                     mutableGameFinishedScreen.display();
-                }
-                else {
+                } else {
                     clearLastGame();
                     mutableLevelCompleteScreen.display();
                 }

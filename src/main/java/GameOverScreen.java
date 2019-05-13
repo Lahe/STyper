@@ -7,7 +7,7 @@ import org.hexworks.zircon.api.grid.TileGrid;
 import org.hexworks.zircon.api.screen.Screen;
 import org.hexworks.zircon.api.uievent.ComponentEventType;
 
-public class GameOverScreen extends GameVars{
+public class GameOverScreen extends GameVars {
     private final TileGrid tileGrid;
     private final Screen gameOverScreen;
 

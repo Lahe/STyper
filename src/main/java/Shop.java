@@ -9,7 +9,7 @@ import org.hexworks.zircon.api.grid.TileGrid;
 import org.hexworks.zircon.api.screen.Screen;
 import org.hexworks.zircon.api.uievent.ComponentEventType;
 
-public class Shop extends GameVars{
+public class Shop extends GameVars {
     private final Screen shopScreen;
     private final TileGrid tileGrid;
 
@@ -35,10 +35,11 @@ public class Shop extends GameVars{
                 .addParagraph("Cost: " + cost)
                 .build();
     }
+
     public static void activateShopButtons(Button buyItem, String item, boolean itemStatus, Screen shopScreen) {
         buyItem.onComponentEvent(ComponentEventType.ACTIVATED, (event) -> {
             if (itemStatus) shopScreen.write(item + " already in inventory", Positions.create(30, 40)).invoke();
-            else if (totalPoints  >= 1000) {
+            else if (totalPoints >= 1000) {
                 switch (item) {
                     case "Booster":
                         boosterStatus = true;
@@ -67,7 +68,7 @@ public class Shop extends GameVars{
         return shopScreen;
     }
 
-    public void build(Screen shopScreen, Screen levelCompleteScreen){
+    public void build(Screen shopScreen, Screen levelCompleteScreen) {
         Panel boosterPanel = buildShopPanels(29, 5, "Booster");
         TextBox boosterBox = buildShopTextBoxes("Boosts credit gain by 2x", 1000);
         Panel nukePanel = buildShopPanels(29, 13, "Nuke");
@@ -83,9 +84,9 @@ public class Shop extends GameVars{
         Button buySlow = Components.button().withText("BUY").withPosition(Positions.create(10, 5)).build();
         Button buyLives = Components.button().withText("BUY").withPosition(Positions.create(10, 5)).build();
 
-        activateShopButtons(buyBooster, "Booster", boosterStatus,shopScreen);
-        activateShopButtons(buyNuke, "Nuke", nukeStatus,shopScreen);
-        activateShopButtons(buySlow, "Slow-mo", slowStatus,shopScreen);
+        activateShopButtons(buyBooster, "Booster", boosterStatus, shopScreen);
+        activateShopButtons(buyNuke, "Nuke", nukeStatus, shopScreen);
+        activateShopButtons(buySlow, "Slow-mo", slowStatus, shopScreen);
 
         buyLives.onComponentEvent(ComponentEventType.ACTIVATED, (event) -> {
             if (totalPoints >= 5000) {
@@ -116,7 +117,8 @@ public class Shop extends GameVars{
             return UIEventResponses.preventDefault();
         });
     }
-    public void display(){
+
+    public void display() {
         shopScreen.display();
     }
 }

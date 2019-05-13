@@ -3,13 +3,9 @@ import org.hexworks.zircon.api.Positions;
 import org.hexworks.zircon.api.Screens;
 import org.hexworks.zircon.api.UIEventResponses;
 import org.hexworks.zircon.api.component.Button;
-import org.hexworks.zircon.api.component.Panel;
 import org.hexworks.zircon.api.grid.TileGrid;
 import org.hexworks.zircon.api.screen.Screen;
 import org.hexworks.zircon.api.uievent.ComponentEventType;
-
-import java.io.BufferedReader;
-import java.io.FileReader;
 
 public class CampaignLevels extends GameVars {
     private final TileGrid tileGrid;
@@ -20,9 +16,9 @@ public class CampaignLevels extends GameVars {
         this.campaignLevelScreen = Screens.createScreenFor(tileGrid);
     }
 
-    public void build(Screen gameScreen,Screen menuScreen){
-        Button continueButton = Components.button().withText("CONTINUE").withPosition(Positions.create(38, 21)).build();
-        Button newGameButton = Components.button().withText("NEW GAME").withPosition(Positions.create(38, 23)).build();
+    public void build(Screen gameScreen, Screen menuScreen) {
+        Button continueButton = Components.button().withText("CONTINUE").withPosition(Positions.create(37, 21)).build();
+        Button newGameButton = Components.button().withText("NEW GAME").withPosition(Positions.create(37, 23)).build();
         Button backToMenuButton2 = Components.button().withText("BACK").withPosition(Positions.offset1x1()).build();
         campaignLevelScreen.addComponent(continueButton);
         campaignLevelScreen.addComponent(newGameButton);
@@ -30,15 +26,14 @@ public class CampaignLevels extends GameVars {
         SaveScreen saveScreen = new SaveScreen(tileGrid);
         continueButton.onComponentEvent(ComponentEventType.ACTIVATED, (event) -> {
             try {
-                if (saveScreen.getSavePanel1() != null ) {
+                if (saveScreen.getSavePanel1() != null) {
                     save1.clear();
                     save2.clear();
                     save3.clear();
-                    saveScreen.clear(saveScreen.getSavePanel1(),saveScreen.getSavePanel2(),saveScreen.getSavePanel3(),saveScreen.getBackToCampaignMenu());
+                    saveScreen.clear(saveScreen.getSavePanel1(), saveScreen.getSavePanel2(), saveScreen.getSavePanel3(), saveScreen.getBackToCampaignMenu());
                 }
-                saveScreen.build(gameScreen,campaignLevelScreen);
-            }
-            catch (Exception e){
+                saveScreen.build(gameScreen, campaignLevelScreen);
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             saveScreen.display();
@@ -76,7 +71,7 @@ public class CampaignLevels extends GameVars {
         return campaignLevelScreen;
     }
 
-    public void display(){
+    public void display() {
         campaignLevelScreen.display();
     }
 }

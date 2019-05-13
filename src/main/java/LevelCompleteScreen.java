@@ -22,6 +22,7 @@ public class LevelCompleteScreen extends GameVars {
         this.tileGrid = tileGrid;
         this.levelCompleteScreen = Screens.createScreenFor(tileGrid);
     }
+
     public static void writeSaveState() {
         String filename = "Saves.txt";
         Timestamp timestamp = new java.sql.Timestamp(System.currentTimeMillis());
@@ -52,13 +53,14 @@ public class LevelCompleteScreen extends GameVars {
             e.printStackTrace();
         }
     }
-    public void build(Screen gameScreen, Screen shopScreen){
-        Button shopButton = Components.button().withText("SHOP").withPosition(Positions.create(20, 30)).build();
-        Button next_level = Components.button().withText("NEXT LEVEL").withPosition(Positions.create(60, 30)).build();
+
+    public void build(Screen gameScreen, Screen shopScreen) {
+        Button shopButton = Components.button().withText("SHOP").withPosition(Positions.create(21, 30)).build();
+        Button next_level = Components.button().withText("NEXT LEVEL").withPosition(Positions.create(54, 30)).build();
         Button saveSlot1 = Components.button().withText("SAVE IN SLOT 1").withPosition(Positions.create(33, 16)).build();
         Button saveSlot2 = Components.button().withText("SAVE IN SLOT 2").withPosition(Positions.create(33, 20)).build();
         Button saveSlot3 = Components.button().withText("SAVE IN SLOT 3").withPosition(Positions.create(33, 24)).build();
-        levelCompleteScreen.write("LEVEL COMPLETED", Positions.create(33, 10)).invoke();
+        levelCompleteScreen.write("LEVEL COMPLETED!", Positions.create(33, 10)).invoke();
         levelCompleteScreen.addComponent(next_level);
         levelCompleteScreen.addComponent(saveSlot1);
         levelCompleteScreen.addComponent(saveSlot2);
@@ -95,19 +97,19 @@ public class LevelCompleteScreen extends GameVars {
             return UIEventResponses.preventDefault();
         });
         saveSlot1.onComponentEvent(ComponentEventType.ACTIVATED, (event) -> {
-            levelCompleteScreen.write("Saved in slot 1", Positions.create(33, 12)).invoke();
+            levelCompleteScreen.write("Saved in slot 1!", Positions.create(33, 12)).invoke();
             saveClicked = 1;
             writeSaveState();
             return UIEventResponses.preventDefault();
         });
         saveSlot2.onComponentEvent(ComponentEventType.ACTIVATED, (event) -> {
-            levelCompleteScreen.write("Saved in slot 2", Positions.create(33, 12)).invoke();
+            levelCompleteScreen.write("Saved in slot 2!", Positions.create(33, 12)).invoke();
             saveClicked = 2;
             writeSaveState();
             return UIEventResponses.preventDefault();
         });
         saveSlot3.onComponentEvent(ComponentEventType.ACTIVATED, (event) -> {
-            levelCompleteScreen.write("Saved in slot 3", Positions.create(33, 12)).invoke();
+            levelCompleteScreen.write("Saved in slot 3!", Positions.create(33, 12)).invoke();
             saveClicked = 3;
             writeSaveState();
             return UIEventResponses.preventDefault();
@@ -118,7 +120,7 @@ public class LevelCompleteScreen extends GameVars {
         return levelCompleteScreen;
     }
 
-    public void display(){
+    public void display() {
         levelCompleteScreen.display();
     }
 }
