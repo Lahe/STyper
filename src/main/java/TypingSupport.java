@@ -9,7 +9,8 @@ import org.hexworks.zircon.api.uievent.KeyboardEventType;
 
 import java.util.ArrayList;
 
-public class TypingSupport extends GameVars { // See klass tegeleb kasutaja poolt sisestatud tekstiga. Kontrollib, kas kirjutatud sõna klapib ekraanil olevaga.
+// See klass tegeleb kasutaja poolt sisestatud tekstiga. Kontrollib, kas kirjutatud sõna klapib ekraanil olevaga.
+public class TypingSupport extends GameVars {
     private static final int TERMINAL_WIDTH = 85;
     private static final int TERMINAL_HEIGHT = 45;
     private static final Size SIZE = Sizes.create(TERMINAL_WIDTH, TERMINAL_HEIGHT);

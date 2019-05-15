@@ -43,6 +43,7 @@ public class Game extends GameVars { // Selles klassis luuakse mängu graafiline
     }
     //private static String rolledParagraph;
 
+    // Arcade mode skoori faili kirjutamine.
     public static void writeResultToFile() {
         Timestamp timestamp = new java.sql.Timestamp(System.currentTimeMillis());
         String difficultyLevel;
@@ -62,11 +63,11 @@ public class Game extends GameVars { // Selles klassis luuakse mängu graafiline
             FileWriter fw = new FileWriter(filename, Charset.forName("UTF-8"), true);
             fw.write(timestamp + " " + winOrLose + " " + difficultyLevel + " " + points + "\n");
             fw.close();
-        } catch (IOException ex) {
-            System.out.println("Oih");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
-
+    // Eelmise mängu kustutamine
     public static void clearLastGame() {
         TypingSupport.setStartOrStopSupport(false);
         stopLaunchGame = true;
@@ -77,7 +78,7 @@ public class Game extends GameVars { // Selles klassis luuakse mängu graafiline
         gameRunning = false;
         mutableGameScreen.write("Points:         ", Positions.create(60, 42)).invoke();
     }
-
+    // Kontrollib, kas Arcade mode's kaotati.
     public static void checkIfGameOver() {
         if (livesLeft == 0) {
             if (gameStyle.equals("ARCADE")) {
@@ -92,8 +93,8 @@ public class Game extends GameVars { // Selles klassis luuakse mängu graafiline
             mutableGameOverScreen.display();
         }
     }
-
-    public static void launchGame(Screen gameScreen) throws Exception { // Loob igale sõnale ThreadWords'i isendi ja kuvab sõnu ekraanile.
+    // Loob igale sõnale ThreadWords'i isendi ja kuvab sõnu ekraanile.
+    public static void launchGame(Screen gameScreen) throws Exception {
         WordSpawner spawner = new WordSpawner();
         WordDrawer drawer = new WordDrawer(gameScreen);
         TypingSupport support = new TypingSupport();
@@ -126,8 +127,8 @@ public class Game extends GameVars { // Selles klassis luuakse mängu graafiline
                 break;
             }
         }
-
-        while (gameRunning) { // Kontrollitakse, kas mäng on läbi. Võidu või kaotuse korral kuvatakse punktide arv.
+        // Kontrollitakse, kas mäng on läbi. Võidu või kaotuse korral kuvatakse punktide arv.
+        while (gameRunning) {
             if (livesLeft == 0) {
                 gameRunning = false;
                 if (gameStyle.equals("ARCADE")) {
@@ -136,6 +137,7 @@ public class Game extends GameVars { // Selles klassis luuakse mängu graafiline
                     writeResultToFile();
                     mutableGameOverScreen.display();
                 } else {
+                    mutableGameOverScreen.write("GAME OVER", Positions.create(38, 20)).invoke();
                     clearLastGame();
                     mutableGameOverScreen.display();
                 }
@@ -160,7 +162,7 @@ public class Game extends GameVars { // Selles klassis luuakse mängu graafiline
         }
     }
 
-
+    // Loob save ja skooritabeli failid kui need puuduvad.
     public static void main(String[] args) throws Exception {
         try {
             File f = new File("Saves.txt");

@@ -23,6 +23,7 @@ public class LevelCompleteScreen extends GameVars {
         this.levelCompleteScreen = Screens.createScreenFor(tileGrid);
     }
 
+    // Save kirjutamine faili
     public static void writeSaveState() {
         String filename = "Saves.txt";
         Timestamp timestamp = new java.sql.Timestamp(System.currentTimeMillis());
@@ -53,7 +54,7 @@ public class LevelCompleteScreen extends GameVars {
             e.printStackTrace();
         }
     }
-
+    // Ekraani ehitamine (tekst, nupud)
     public void build(Screen gameScreen, Screen shopScreen) {
         Button shopButton = Components.button().withText("SHOP").withPosition(Positions.create(21, 30)).build();
         Button next_level = Components.button().withText("NEXT LEVEL").withPosition(Positions.create(54, 30)).build();

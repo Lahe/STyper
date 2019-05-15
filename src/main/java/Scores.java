@@ -24,6 +24,7 @@ public class Scores extends GameVars {
         this.scoreScreen = Screens.createScreenFor(tileGrid);
     }
 
+    // Skoori tekstikastide loomine
     public static TextBox buildScoreTextBoxes(List<Integer> tops) {
         return Components.textBox()
                 .withPosition(Positions.create(0, 1))
@@ -37,6 +38,7 @@ public class Scores extends GameVars {
                 .build();
     }
 
+    // Skoori paneelide loomine
     public static Panel buildScorePanels(int x, int y, String title) {
         return Components.panel()
                 .withPosition(Positions.create(x, y))
@@ -46,6 +48,7 @@ public class Scores extends GameVars {
                 .build();
     }
 
+    // Teksti paigutamine paneeli
     public static Panel addContentToPanels(int x, int y, String title, List<Integer> tops) {
         Panel panel = buildScorePanels(x, y, title);
         TextBox box = buildScoreTextBoxes(tops);
@@ -53,6 +56,7 @@ public class Scores extends GameVars {
         return panel;
     }
 
+    // Ekraani ehitamine (tekst, nupud, paneelid)
     public void build(Screen menuScreen) {
         final Button backToMenuButtonScores = Components.button().withText("BACK").withPosition(Positions.offset1x1()).build();
         scoresFromFile();
@@ -86,6 +90,7 @@ public class Scores extends GameVars {
         scoreScreen.addComponent(backToMenuButtonScores);
     }
 
+    // Sobiva skoori lisamine skooritabelisse
     public static void addScoreToTopList(List<Integer> tops, String[] line) {
         int score = Integer.parseInt(line[4]);
         if (tops.size() < 5) {
@@ -98,6 +103,7 @@ public class Scores extends GameVars {
         Collections.sort(tops, Collections.reverseOrder());
     }
 
+    // Skooride lugemine failist ja tabelisse lisamine
     public static void scoresFromFile() {
         String rida;
         try (BufferedReader in = new BufferedReader((new FileReader("Leaderboards.txt", Charset.forName("UTF-8"))))) {
@@ -126,6 +132,7 @@ public class Scores extends GameVars {
         }
     }
 
+    // Sobiva skoori kätte saamine listist. Kui puudub, siis "-".
     public static String getScore(List<Integer> list, int index) {
         if (list.size() > index) {
             return Integer.toString(list.get(index));

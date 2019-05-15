@@ -18,6 +18,7 @@ public class Shop extends GameVars {
         this.shopScreen = Screens.createScreenFor(tileGrid);
     }
 
+    // Poe paneelide loomine
     public static Panel buildShopPanels(int x, int y, String title) {
         return Components.panel()
                 .withPosition(Positions.create(x, y))
@@ -27,6 +28,7 @@ public class Shop extends GameVars {
                 .build();
     }
 
+    // Tekstikastide loomine
     public static TextBox buildShopTextBoxes(String p1, int cost) {
         return Components.textBox()
                 .withPosition(Positions.create(0, 1))
@@ -36,6 +38,7 @@ public class Shop extends GameVars {
                 .build();
     }
 
+    // Poes tehtud valikutele reageerimine
     public static void activateShopButtons(Button buyItem, String item, boolean itemStatus, Screen shopScreen) {
         buyItem.onComponentEvent(ComponentEventType.ACTIVATED, (event) -> {
             if (itemStatus) shopScreen.write(item + " already in inventory", Positions.create(30, 40)).invoke();
@@ -68,6 +71,7 @@ public class Shop extends GameVars {
         return shopScreen;
     }
 
+    // Poe ekraani ehitamine (nupud, tekst)
     public void build(Screen shopScreen, Screen levelCompleteScreen) {
         Panel boosterPanel = buildShopPanels(29, 5, "Booster");
         TextBox boosterBox = buildShopTextBoxes("Boosts credit gain by 2x", 1000);

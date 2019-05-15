@@ -3,7 +3,8 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 
-public class WordSpawner { // See klass tegeleb failist sõnade lugemisega ja nende sõnade seast suvalise valimisega.
+// See klass tegeleb failist sõnade lugemisega ja nende sõnade seast suvalise valimisega.
+public class WordSpawner {
     public static ArrayList<String> readWords(String filename) throws Exception { // Failist sõnade lugemine.
         File file = new File(filename);
         ArrayList<String> words = new ArrayList<>();

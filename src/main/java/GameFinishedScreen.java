@@ -16,7 +16,7 @@ public class GameFinishedScreen extends GameVars {
         this.tileGrid = tileGrid;
         this.gameFinishedScreen = Screens.createScreenFor(tileGrid);
     }
-
+    // Ehitab ekraani (tekst, nupud)
     public void build(Screen gameScreen, Screen menuScreen) {
         gameFinishedScreen.write("Game Finished. Well done!", Positions.create(31, 20)).invoke();
         Button playAgainButtonFinishedScreen = Components.button().withText("PLAY AGAIN").withPosition(Positions.create(37, 23)).build();

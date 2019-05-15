@@ -16,6 +16,7 @@ public class Menu extends GameVars {
         this.menuScreen = Screens.createScreenFor(tileGrid);
     }
 
+    //Ekraani ehitamine (tekst, nupud)
     public void build(Screen campaignLevelScreen, Screen levelScreen, Scores scoreScreen) {
         menuScreen.write(" S-Typer", Positions.create(38, 12)).invoke();
         final Button campaignButton = Components.button().withText("CAMPAIGN").withPosition(Positions.create(37, 17)).build();

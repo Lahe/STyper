@@ -15,7 +15,7 @@ public class CampaignLevels extends GameVars {
         this.tileGrid = tileGrid;
         this.campaignLevelScreen = Screens.createScreenFor(tileGrid);
     }
-
+    // Ekraani loomine (nuppude paigutamine ja nuppudele reageerimine.
     public void build(Screen gameScreen, Screen menuScreen) {
         Button continueButton = Components.button().withText("CONTINUE").withPosition(Positions.create(37, 21)).build();
         Button newGameButton = Components.button().withText("NEW GAME").withPosition(Positions.create(37, 23)).build();

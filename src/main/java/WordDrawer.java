@@ -7,8 +7,8 @@ import org.hexworks.zircon.api.graphics.CharacterTileString;
 import org.hexworks.zircon.api.graphics.Layer;
 import org.hexworks.zircon.api.grid.TileGrid;
 
-
-public class WordDrawer extends GameVars { // See klass tegeleb ekraanile sõnade kuvamisega.
+// See klass tegeleb ekraanile sõnade kuvamisega.
+public class WordDrawer extends GameVars {
     private TileGrid tileGrid;
     private Layer wordLayer;
     private Layer paraLayer;

@@ -1,7 +1,8 @@
 import org.hexworks.zircon.api.Positions;
 import org.hexworks.zircon.api.graphics.Layer;
 
-public class ThreadWords extends GameVars implements Runnable { // Selles klassis toimub sõnade alla liigutamine ja elude üle arve pidamine.
+// Selles klassis toimub sõnade alla liigutamine ja elude üle arve pidamine.
+public class ThreadWords extends GameVars implements Runnable {
     private Layer wordLayer;
 
     public static int getLivesLeft() {

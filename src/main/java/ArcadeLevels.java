@@ -17,6 +17,7 @@ public class ArcadeLevels extends GameVars {
         this.levelScreen = Screens.createScreenFor(tileGrid);
     }
 
+    // Nuppude aktiveerimine, mänguekraani loomine
     public static void activateArcadeButtons(Button button, int[] arcadeStats, String difficulty, Screen gameScreen) {
         button.onComponentEvent(ComponentEventType.ACTIVATED, (event) -> {
             gameRunning = true;
@@ -39,7 +40,7 @@ public class ArcadeLevels extends GameVars {
             return UIEventResponses.preventDefault();
         });
     }
-
+    // Ekraani ehitamine (teksti, nuppude ja kasti paigutamine)
     public void build(Screen gameScreen, Screen menuScreen) {
         final Button easyButton = Components.button().withText("Easy").withPosition(Positions.create(38, 19)).build();
         final Button medButton = Components.button().withText("Medium").withPosition(Positions.create(38, 21)).build();

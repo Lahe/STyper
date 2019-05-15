@@ -16,10 +16,9 @@ public class GameOverScreen extends GameVars {
         this.tileGrid = tileGrid;
         this.gameOverScreen = Screens.createScreenFor(tileGrid);
     }
-
+    // Ehitab ekraani (nupp)
     public void build(Screen gameScreen, Screen menuScreen) {
         final Button playAgainButton = Components.button().withText("PLAY AGAIN").withPosition(Positions.create(37, 23)).build();
-        gameOverScreen.write("GAME OVER", Positions.create(38, 20)).invoke();
         gameOverScreen.addComponent(playAgainButton);
         playAgainButton.onComponentEvent(ComponentEventType.ACTIVATED, (event) -> {
             Game.clearLastGame();

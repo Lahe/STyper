@@ -42,6 +42,7 @@ public class SaveScreen extends GameVars {
         this.chooseSave = Screens.createScreenFor(tileGrid);
     }
 
+    // Save laadimise meetod
     public static void loadSave(List<String> saveInfo) {
         currentLevel = Integer.parseInt(saveInfo.get(0));
         totalPoints = Integer.parseInt(saveInfo.get(1));
@@ -52,6 +53,7 @@ public class SaveScreen extends GameVars {
         slowStatus = Boolean.valueOf(saveInfo.get(5));
     }
 
+    // Save'de failist lugemine
     public static void loadSaveState() throws Exception {
         String rida;
         try (BufferedReader in = new BufferedReader((new FileReader("Saves.txt")));
@@ -79,6 +81,7 @@ public class SaveScreen extends GameVars {
         }
     }
 
+    // Save paneeli loomine
     public static Panel buildSavePanels(int x, int y, String title) {
         return Components.panel()
                 .withPosition(Positions.create(x, y))
@@ -88,6 +91,7 @@ public class SaveScreen extends GameVars {
                 .build();
     }
 
+    // Save andmete lisamine tekstikasti
     public static TextBox buildSaveTextBoxes(List<String> save) {
         return Components.textBox()
                 .withPosition(Positions.create(0, 1))
@@ -98,6 +102,7 @@ public class SaveScreen extends GameVars {
                 .build();
     }
 
+    // Valitud save aktiveerimine, mänguekraanile kirjutamine
     public static void activateChooseSaveButton(Button choose, List<String> save, Screen gameScreen) {
         choose.onComponentEvent(ComponentEventType.ACTIVATED, (event) -> {
             try {
@@ -128,6 +133,7 @@ public class SaveScreen extends GameVars {
         });
     }
 
+    // Teksti, nuppude paigutamine paneeli
     public static Panel addContentToPanels(int x, int y, String title, List<String> save, Screen gameScreen) {
         Button choose = Components.button().withText("CHOOSE").withPosition(Positions.create(4, 7)).build();
         Panel savePanel = buildSavePanels(x, y, title);
@@ -138,6 +144,7 @@ public class SaveScreen extends GameVars {
         return savePanel;
     }
 
+    // Eemaldab ekraanilt paneelid ja nupu
     public void clear(Panel p1, Panel p2, Panel p3, Button b) {
         chooseSave.removeComponent(p1);
         chooseSave.removeComponent(p2);
@@ -145,6 +152,7 @@ public class SaveScreen extends GameVars {
         chooseSave.removeComponent(b);
     }
 
+    // Ehitab ekraani (lisab teksti, nupud)
     public void build(Screen gameScreen, Screen campaignLevelScreen) throws Exception {
         backToCampaignMenu = Components.button().withText("BACK").withPosition(Positions.offset1x1()).build();
         loadSaveState();
