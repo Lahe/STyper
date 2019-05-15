@@ -15,6 +15,7 @@ import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.List;
 
+//Skooride kuvamise ekraan
 public class Scores extends GameVars {
     private final TileGrid tileGrid;
     private final Screen scoreScreen;
@@ -56,7 +57,7 @@ public class Scores extends GameVars {
         return panel;
     }
 
-    // Ekraani ehitamine (tekst, nupud, paneelid)
+    // Score'ide ekraani ehitamine (tekst, nupud, paneelid)
     public void build(Screen menuScreen) {
         final Button backToMenuButtonScores = Components.button().withText("BACK").withPosition(Positions.offset1x1()).build();
         scoresFromFile();
@@ -128,7 +129,7 @@ public class Scores extends GameVars {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 

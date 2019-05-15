@@ -13,6 +13,7 @@ import java.io.FileWriter;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
+//Leveli lõpetamise ekraan
 public class LevelCompleteScreen extends GameVars {
     private final TileGrid tileGrid;
     private final Screen levelCompleteScreen;
@@ -54,7 +55,8 @@ public class LevelCompleteScreen extends GameVars {
             e.printStackTrace();
         }
     }
-    // Ekraani ehitamine (tekst, nupud)
+
+    // Leveli lõpetamise screeni ehitamine (tekst, nupud), nuppude aktiveerimine
     public void build(Screen gameScreen, Screen shopScreen) {
         Button shopButton = Components.button().withText("SHOP").withPosition(Positions.create(21, 30)).build();
         Button next_level = Components.button().withText("NEXT LEVEL").withPosition(Positions.create(54, 30)).build();
@@ -84,7 +86,7 @@ public class LevelCompleteScreen extends GameVars {
                 try {
                     Game.launchGame(gameScreen);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    throw new RuntimeException(e);
                 }
             };
             Thread t = new Thread(runnable);

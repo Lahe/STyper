@@ -13,7 +13,8 @@ import java.nio.charset.Charset;
 import java.sql.Timestamp;
 import java.util.HashMap;
 
-public class Game extends GameVars { // Selles klassis luuakse mängu graafiline liides, luuakse get- ja set-meetodid ning käivitatakse mäng.
+// Mängu peaklass
+public class Game extends GameVars {
     private static final TileGrid tileGrid = SwingApplications.startTileGrid(AppConfigs.newConfig()
             .withDefaultTileset(BuiltInCP437TilesetResource.MS_GOTHIC_16X16)
             .withSize(TypingSupport.getSIZE())
@@ -28,7 +29,7 @@ public class Game extends GameVars { // Selles klassis luuakse mängu graafiline
     private static GameOverScreen gameOverScreen = new GameOverScreen(tileGrid);
     private static GameScreen gameScreen = new GameScreen(tileGrid);
     private static LevelCompleteScreen levelCompleteScreen = new LevelCompleteScreen(tileGrid);
-
+    //Muudetavad screenid
     private static Screen mutableMenu = menu.getMenuScreen();
     private static Screen mutableShop = shop.getShopScreen();
     private static Screen mutableArcadeLevels = arcadeLevels.getLevelScreen();
@@ -64,9 +65,10 @@ public class Game extends GameVars { // Selles klassis luuakse mängu graafiline
             fw.write(timestamp + " " + winOrLose + " " + difficultyLevel + " " + points + "\n");
             fw.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
+
     // Eelmise mängu kustutamine
     public static void clearLastGame() {
         TypingSupport.setStartOrStopSupport(false);
@@ -78,7 +80,8 @@ public class Game extends GameVars { // Selles klassis luuakse mängu graafiline
         gameRunning = false;
         mutableGameScreen.write("Points:         ", Positions.create(60, 42)).invoke();
     }
-    // Kontrollib, kas Arcade mode's kaotati.
+
+    // Kontrollib, kas elud otsas.
     public static void checkIfGameOver() {
         if (livesLeft == 0) {
             if (gameStyle.equals("ARCADE")) {
@@ -93,7 +96,8 @@ public class Game extends GameVars { // Selles klassis luuakse mängu graafiline
             mutableGameOverScreen.display();
         }
     }
-    // Loob igale sõnale ThreadWords'i isendi ja kuvab sõnu ekraanile.
+
+    // Iga sõna jaoks tehakse thread ja kuvatakse ekraanile.
     public static void launchGame(Screen gameScreen) throws Exception {
         WordSpawner spawner = new WordSpawner();
         WordDrawer drawer = new WordDrawer(gameScreen);
@@ -163,6 +167,7 @@ public class Game extends GameVars { // Selles klassis luuakse mängu graafiline
     }
 
     // Loob save ja skooritabeli failid kui need puuduvad.
+    // Mängu käimapanek
     public static void main(String[] args) throws Exception {
         try {
             File f = new File("Saves.txt");
@@ -179,7 +184,7 @@ public class Game extends GameVars { // Selles klassis luuakse mängu graafiline
                 f2.createNewFile();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
 
         menu.build(mutableCampaignLevels, mutableArcadeLevels, scores);

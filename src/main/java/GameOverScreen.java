@@ -7,6 +7,7 @@ import org.hexworks.zircon.api.grid.TileGrid;
 import org.hexworks.zircon.api.screen.Screen;
 import org.hexworks.zircon.api.uievent.ComponentEventType;
 
+//Mängu kaotuse ekraan
 public class GameOverScreen extends GameVars {
     private final TileGrid tileGrid;
     private final Screen gameOverScreen;
@@ -16,7 +17,8 @@ public class GameOverScreen extends GameVars {
         this.tileGrid = tileGrid;
         this.gameOverScreen = Screens.createScreenFor(tileGrid);
     }
-    // Ehitab ekraani (nupp)
+
+    // Ehitab mängu lõpu ekraani (nupp)
     public void build(Screen gameScreen, Screen menuScreen) {
         final Button playAgainButton = Components.button().withText("PLAY AGAIN").withPosition(Positions.create(37, 23)).build();
         gameOverScreen.addComponent(playAgainButton);

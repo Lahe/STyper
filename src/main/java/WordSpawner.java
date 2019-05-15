@@ -28,7 +28,7 @@ public class WordSpawner {
         try {
             words = readWords("simple2.txt");
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 

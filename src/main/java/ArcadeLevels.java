@@ -7,6 +7,7 @@ import org.hexworks.zircon.api.grid.TileGrid;
 import org.hexworks.zircon.api.screen.Screen;
 import org.hexworks.zircon.api.uievent.ComponentEventType;
 
+//Arcade mode levelite valiku ekraan
 public class ArcadeLevels extends GameVars {
     private final TileGrid tileGrid;
     private final Screen levelScreen;
@@ -32,7 +33,7 @@ public class ArcadeLevels extends GameVars {
                 try {
                     Game.launchGame(gameScreen);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    throw new RuntimeException(e);
                 }
             };
             Thread t = new Thread(runnable);
@@ -40,6 +41,7 @@ public class ArcadeLevels extends GameVars {
             return UIEventResponses.preventDefault();
         });
     }
+
     // Ekraani ehitamine (teksti, nuppude ja kasti paigutamine)
     public void build(Screen gameScreen, Screen menuScreen) {
         final Button easyButton = Components.button().withText("Easy").withPosition(Positions.create(38, 19)).build();

@@ -7,6 +7,7 @@ import org.hexworks.zircon.api.grid.TileGrid;
 import org.hexworks.zircon.api.screen.Screen;
 import org.hexworks.zircon.api.uievent.ComponentEventType;
 
+//Campaign mode valikute ekraan
 public class CampaignLevels extends GameVars {
     private final TileGrid tileGrid;
     private final Screen campaignLevelScreen;
@@ -15,7 +16,8 @@ public class CampaignLevels extends GameVars {
         this.tileGrid = tileGrid;
         this.campaignLevelScreen = Screens.createScreenFor(tileGrid);
     }
-    // Ekraani loomine (nuppude paigutamine ja nuppudele reageerimine.
+
+    // Ekraani loomine (nuppude paigutamine ja nuppudele reageerimine.)
     public void build(Screen gameScreen, Screen menuScreen) {
         Button continueButton = Components.button().withText("CONTINUE").withPosition(Positions.create(37, 21)).build();
         Button newGameButton = Components.button().withText("NEW GAME").withPosition(Positions.create(37, 23)).build();
@@ -34,7 +36,7 @@ public class CampaignLevels extends GameVars {
                 }
                 saveScreen.build(gameScreen, campaignLevelScreen);
             } catch (Exception e) {
-                e.printStackTrace();
+                throw new RuntimeException(e);
             }
             saveScreen.display();
             return UIEventResponses.preventDefault();
@@ -54,7 +56,7 @@ public class CampaignLevels extends GameVars {
                 try {
                     Game.launchGame(gameScreen);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    throw new RuntimeException(e);
                 }
             };
             Thread t = new Thread(runnable);

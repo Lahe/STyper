@@ -9,6 +9,7 @@ import org.hexworks.zircon.api.grid.TileGrid;
 import org.hexworks.zircon.api.screen.Screen;
 import org.hexworks.zircon.api.uievent.ComponentEventType;
 
+//Poe ekraan
 public class Shop extends GameVars {
     private final Screen shopScreen;
     private final TileGrid tileGrid;

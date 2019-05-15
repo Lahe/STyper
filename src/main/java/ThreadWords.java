@@ -27,7 +27,7 @@ public class ThreadWords extends GameVars implements Runnable {
                 }
             }
         } catch (Exception err) {
-            err.printStackTrace();
+            throw new RuntimeException(err);
         }
     }
 

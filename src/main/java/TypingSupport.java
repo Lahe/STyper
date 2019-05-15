@@ -60,7 +60,7 @@ public class TypingSupport extends GameVars {
                     }
                     if (sb.toString().equals("launchbooster")) {
                         Game.getMutableGameScreen().write("✓".repeat(12), Positions.create(1, 42)).invoke();
-                        if (boosterActive) {
+                        if (boosterStatus) {
                             boosterStatus = false;
                             boosterActive = true;
                         }

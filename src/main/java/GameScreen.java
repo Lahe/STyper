@@ -8,6 +8,7 @@ import org.hexworks.zircon.api.grid.TileGrid;
 import org.hexworks.zircon.api.screen.Screen;
 import org.hexworks.zircon.api.uievent.ComponentEventType;
 
+//Üldine mängulaua ekraan
 public class GameScreen extends GameVars {
     private final TileGrid tileGrid;
     private final Screen gameScreen;
@@ -22,6 +23,7 @@ public class GameScreen extends GameVars {
         return backButton;
     }
 
+    //Ekraani ehitamine (nupp)
     public void build(Screen menuScreen) {
         backButton.onComponentEvent(ComponentEventType.ACTIVATED, (event) -> { // BACK nuppu vajutades kustutab teksti layerid ja taastab elud ning algse punktiseisu.
             for (Layer b : tekstid) {

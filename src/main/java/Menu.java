@@ -7,6 +7,7 @@ import org.hexworks.zircon.api.grid.TileGrid;
 import org.hexworks.zircon.api.screen.Screen;
 import org.hexworks.zircon.api.uievent.ComponentEventType;
 
+//Menüü ekraan
 public class Menu extends GameVars {
     private final Screen menuScreen;
     private final TileGrid tileGrid;
@@ -16,7 +17,7 @@ public class Menu extends GameVars {
         this.menuScreen = Screens.createScreenFor(tileGrid);
     }
 
-    //Ekraani ehitamine (tekst, nupud)
+    //Menüü ekraani ehitamine (tekst, nupud), nuppude aktiveerimine
     public void build(Screen campaignLevelScreen, Screen levelScreen, Scores scoreScreen) {
         menuScreen.write(" S-Typer", Positions.create(38, 12)).invoke();
         final Button campaignButton = Components.button().withText("CAMPAIGN").withPosition(Positions.create(37, 17)).build();

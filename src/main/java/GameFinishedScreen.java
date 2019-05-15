@@ -7,6 +7,7 @@ import org.hexworks.zircon.api.grid.TileGrid;
 import org.hexworks.zircon.api.screen.Screen;
 import org.hexworks.zircon.api.uievent.ComponentEventType;
 
+//Mängu läbimise ekraan
 public class GameFinishedScreen extends GameVars {
     private final TileGrid tileGrid;
     private final Screen gameFinishedScreen;
@@ -16,7 +17,8 @@ public class GameFinishedScreen extends GameVars {
         this.tileGrid = tileGrid;
         this.gameFinishedScreen = Screens.createScreenFor(tileGrid);
     }
-    // Ehitab ekraani (tekst, nupud)
+
+    // Ehitab mängu läbimise ekraani (tekst, nupud)
     public void build(Screen gameScreen, Screen menuScreen) {
         gameFinishedScreen.write("Game Finished. Well done!", Positions.create(31, 20)).invoke();
         Button playAgainButtonFinishedScreen = Components.button().withText("PLAY AGAIN").withPosition(Positions.create(37, 23)).build();

@@ -13,6 +13,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.List;
 
+//Save'ide valimise ekraan
 public class SaveScreen extends GameVars {
     private final TileGrid tileGrid;
     private final Screen chooseSave;
@@ -53,7 +54,7 @@ public class SaveScreen extends GameVars {
         slowStatus = Boolean.valueOf(saveInfo.get(5));
     }
 
-    // Save'de failist lugemine
+    // Save-de failist lugemine
     public static void loadSaveState() throws Exception {
         String rida;
         try (BufferedReader in = new BufferedReader((new FileReader("Saves.txt")));
@@ -81,7 +82,7 @@ public class SaveScreen extends GameVars {
         }
     }
 
-    // Save paneeli loomine
+    // Save'i paneeli loomine
     public static Panel buildSavePanels(int x, int y, String title) {
         return Components.panel()
                 .withPosition(Positions.create(x, y))
@@ -91,7 +92,7 @@ public class SaveScreen extends GameVars {
                 .build();
     }
 
-    // Save andmete lisamine tekstikasti
+    // Save'i andmete lisamine tekstikasti
     public static TextBox buildSaveTextBoxes(List<String> save) {
         return Components.textBox()
                 .withPosition(Positions.create(0, 1))
@@ -102,13 +103,13 @@ public class SaveScreen extends GameVars {
                 .build();
     }
 
-    // Valitud save aktiveerimine, mänguekraanile kirjutamine
+    // Valitud save'i aktiveerimine, mänguekraanile kirjutamine
     public static void activateChooseSaveButton(Button choose, List<String> save, Screen gameScreen) {
         choose.onComponentEvent(ComponentEventType.ACTIVATED, (event) -> {
             try {
                 loadSave(save);
             } catch (Exception e) {
-                e.printStackTrace();
+                throw new RuntimeException(e);
             }
             gameRunning = true;
             stopLaunchGame = false;
@@ -124,7 +125,7 @@ public class SaveScreen extends GameVars {
                 try {
                     Game.launchGame(gameScreen);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    throw new RuntimeException(e);
                 }
             };
             Thread t = new Thread(runnable);
@@ -152,7 +153,7 @@ public class SaveScreen extends GameVars {
         chooseSave.removeComponent(b);
     }
 
-    // Ehitab ekraani (lisab teksti, nupud)
+    // Ehitab savescreen ekraani (lisab teksti, nupud)
     public void build(Screen gameScreen, Screen campaignLevelScreen) throws Exception {
         backToCampaignMenu = Components.button().withText("BACK").withPosition(Positions.offset1x1()).build();
         loadSaveState();
