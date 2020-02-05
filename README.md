@@ -3,6 +3,9 @@ Version 1.02
 A TypeRacer inspired command line emulating typing game. Includes a campaign mode and arcade mode.  
 
 ## Campaign mode: 
+
+![](https://i.imgur.com/hxeup2f.png)
+
 ### Features:  
 9 progressively harder levels  
 Saving progress  
@@ -15,10 +18,16 @@ Shop with working power-ups
 **Extra life:** adds an extra life  
 
 ## Arcade mode:  
-5 difficulty levels  
+5 difficulty levels
+![](https://i.imgur.com/srrjtWg.png)
+
 #### Levels:  
 Easy - 2000ms spawn delay - 2000ms to fall 1 step - 15 words  
 Medium - 1500 ms spawn delay - 1500ms to fall - 30 words  
 Hard - 1000 ms spawn delay - 1000ms to fall - 60 words  
 Extreme - 750 ms spawn delay - 750ms to fall - 60 words  
 Insane - 500 ms spawn delay - 500ms to fall - 60 words  
+
+#### Leaderboard:
+
+![](https://i.imgur.com/tVgd1kK.png)
